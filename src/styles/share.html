@@ -1,0 +1,344 @@
+<html>
+
+<head>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+
+@font-face {
+  font-family: "master";
+  src: url("font.ttf");
+
+}
+
+@font-face {
+  font-family: "bold";
+  src: url("bold.ttf");
+
+}
+
+@font-face {
+  font-family: "discord";
+  src: url("discord.otf");
+
+}
+
+@font-face {
+  font-family: "github";
+  src: url("github.ttf");
+
+}
+
+@font-face {
+  font-family: "twitch";
+  src: url("twitch.otf");
+
+}
+
+@font-face {
+  font-family: "instagram";
+  src: url("instagram.otf");
+
+}
+
+body, html {
+background-color:transparent;
+overflow:hidden;
+box-sizing:border-box;
+font-family:'bold';
+}
+
+.widget {
+    width: 100%;
+    background-color: #e9e9e9;
+    position: relative;
+    border-radius: 2.5vmin;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+    padding: 2.5vmin;
+    min-width: 50vmin;
+    max-width: 80vmin;
+	margin:1.5vmin;
+	margin-bottom:2.5vmin;
+	margin-top:2.5vmin;
+}
+
+.widget img {
+width:100%;
+height:10%;
+aspect-ratio:1/1;
+object-fit:cover;
+transform:scale(1.5);
+padding-bottom:1.5vmin;
+}
+
+.widget p {
+font-family:'master';
+}
+
+.app {
+display:inline-block;
+text-align:center;
+padding:2.5vmin;
+margin:1vmin;
+margin-bottom:2.5vmin;
+margin-top:2.5vmin;
+border-radius:2.5vmin;
+width:30%;
+height:auto;
+aspect-ratio:1/0.15;
+max-width:25vmin;
+box-sizing:border-box;
+position:relative;
+}
+
+.app i {
+color:white;
+text-align:center;
+font-size:10vmin;
+margin:0;padding:0;
+}
+
+.app h1 {
+text-align:center;
+color:white;
+margin:0;
+padding:0;
+font-size:3vmin;
+font-weight:900;
+}
+
+b {
+font-family:'bold';
+}
+
+#left {
+       width: 90vmin;
+    position: relative;
+    box-sizing: border-box;
+    border-right: 5px solid #e9e9e9;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#right {
+    display: inline-block;
+    width: 100vmin;
+    box-sizing: border-box;
+    padding: 0vmin;
+	padding-left:7.5vmin;
+    height: 100%;
+    vertical-align: top;
+    padding-top: 0;
+	padding-bottom:5vmin;
+	white-space:no-wrap;
+}
+
+#right p {
+font-family:'master';
+}
+
+#right button {
+       width: 100%;
+    background-color: #2c2c2c;
+    border: none;
+    color: white;
+    font-family: 'bold';
+    vertical-align: middle;
+    padding: 2.5vmin;
+    border-radius: 2.5vmin;
+    font-size: 2.5vmin;
+}
+
+#right button i, #right button span {
+vertical-align:middle;
+}
+
+
+#share_project_frame, canvas {
+        border: none;
+    background-color: #e9e9e9;
+    width: 100%;
+    margin: 3.5vmin;
+    margin-left: 0;
+    margin-right: 0;
+    height: 55%;
+    border-radius:2.5vmin;
+    box-sizing: border-box;
+    background-image: url('https://images.unsplash.com/uploads/141103282695035fa1380/95cdfeef?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2630');
+    background-size: 110%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+canvas {
+
+}
+
+#share_project_bar {
+    position: absolute;
+    bottom: 12.5vmin;
+    width: 100%;
+    padding: 2vmin;
+	display:none;
+}
+
+#share_project_bar i {
+    font-size: 4vmin;
+    font-weight: 900;
+    background-color: white;
+    padding: 1vmin;
+    border-radius: 100%;
+	cursor:pointer;
+}
+
+button {
+cursor:pointer;
+}
+
+
+
+</style>
+
+</head>
+
+<script src = "html2canvas.js" ></script>
+
+<body>
+
+<div id = "left">
+
+<div class = "widget">
+<img src = "https://images.unsplash.com/photo-1505275350441-83dcda8eeef5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80" ></img>
+<h1>Join the community</h1>
+<p>Welcome to the <b><i class="ri-share-fill" style = "font-size:2.25vmin"></i> Share Menu</b>. Looking to join us? Pick a platform and hop in!</p>
+</div>
+
+<div class = "grid">
+
+<div style = "background-color:#404eed" class = "app">
+<i class="ri-discord-fill"></i>
+<h1 style = "font-family:'discord';" >Discord</h1>
+</div>
+
+<div style = "background-color:#161b22" class = "app">
+<i class="ri-github-fill"></i>
+<h1 style = "font-family:'github';" >GitHub</h1>
+</div>
+
+<div style = "background-color:#1DA1F2" class = "app">
+<i class="ri-twitter-fill"></i>
+<h1 style = "font-family:Helvetica;" >Twitter</h1>
+</div>
+<br>
+
+<div style = "background-color:#FF5700" class = "app">
+<i class="ri-reddit-fill"></i>
+<h1 style = "font-family:Verdana;" >Reddit</h1>
+</div>
+
+<div style = "background-color:#9147ff" class = "app">
+<i class="ri-twitch-fill"></i>
+<h1 style = "font-family:'twitch';" >Twitch</h1>
+</div>
+
+<div style = "background-color:#C13584" class = "app">
+<i class="ri-instagram-line"></i>
+<h1 style = "font-family:'instagram';" >Instagram</h1>
+</div>
+
+</div>
+
+</div>
+
+<div id = "right">
+<h1>Share my project</h1>
+<p>If you want to share your work, try <b><i class="ri-share-box-fill" style = "font-size:2.25vmin"></i> exporting it</b>. If you'd rather just take a picture, we're here for that too.</p>
+<button onclick = "write_preview()"><i class="ri-camera-fill"></i> <span> Take a snapshot</span></button>
+<span id = "share_project_container">
+<iframe src = "" id = "share_project_frame"></iframe>
+</span>
+<div id = "share_project_bar">
+<i onclick = "download_preview()" class="ri-download-2-fill"></i>
+<i onclick = "copy_preview()" class="ri-file-copy-fill"></i>
+</div>
+<p style = "    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 2vmin;
+    color: lightgray;
+    margin-top: -0.5vmin;
+    font-family: 'bold';">Your pic should appear in the box above.</p>
+</div> 
+
+</body>
+
+<script>
+
+var write_preview = function(){
+
+navigator.clipboard.readText()
+  .then(text => {
+
+document.getElementById('share_project_bar').style.display = "block";
+
+var iframe = document.createElement('iframe');
+document.getElementById('share_project_container').innerHTML = "";
+document.getElementById('share_project_container').appendChild(iframe);
+iframe.id = "share_project_frame";
+
+iframe.contentWindow.document.open();
+
+iframe.contentWindow.document.write(text);
+
+const iWindow = iframe.contentWindow;
+const iDocument = iWindow.document;
+
+const element = iDocument.documentElement;
+
+html2canvas(element).then(canvas => {
+    document.body.appendChild(canvas);
+	canvas.id = "share_project_canvas";
+	document.getElementById('share_project_canvas').remove();
+	document.getElementById('share_project_container').appendChild(canvas);
+	document.getElementById('share_project_frame').style.display = "none";
+});
+
+
+  })
+  .catch(err => {
+    console.error('Failed to read clipboard contents: ', err);
+  });
+  
+  };
+  
+
+
+
+var copy_preview = function(){
+
+
+var canvas = document.querySelector("canvas");	
+canvas.toBlob(function(blob) { 
+    const item = new ClipboardItem({ "image/png": blob });
+    navigator.clipboard.write([item]); 
+});
+
+
+};  
+
+var download_preview= function(){
+
+var canvas = document.querySelector("canvas");
+  image = canvas.toDataURL("image/png");
+  var link = document.createElement('a');
+  link.download = "My Project.png";
+  link.href = image;
+  link.click();
+  
+  };
+
+
+</script>
+
+</html>

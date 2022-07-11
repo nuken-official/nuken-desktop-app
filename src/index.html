@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href = "icons/favi.ico">
+<link rel="stylesheet" href="styles/uikit.css" />
+<link href="icons/remix/remixicon.css" rel="stylesheet">
+<link href="styles/tuesday.css" rel="stylesheet">
+<link href="styles/code_input.css" rel="stylesheet">
+<link href="styles/prism.css" rel="stylesheet">
+<link href="styles/default_stylesheet.css" rel="stylesheet">
+<script src="scripts/jquery.js"></script>
+<script src="scripts/jquery-ui.min.js"></script>
+<script src="scripts/prism.js"></script>
+<script src="scripts/uikit.js"></script>
+<script src="scripts/html2canvas.js"></script>
+<script src="scripts/uikit_icons.js"></script>
+<script src="scripts/code_input.js"></script>
+<script src="scripts/share.js"></script>
+</head>
+
+<body>
+
+<div id = "nuken">
+
+<!--Splash screen area. Loading bar, logo, version information, etc.-->
+<div id = "splash"></div>
+
+<!--The navbar.-->
+<nav id = "navbar">
+
+<!--This is the draggable part of the navbar. I
+t's left empty to look nice with the UI window control buttons, and to display small text/images if needed. -->
+<div class = "top" class = "drag">
+</div>
+
+<!--The "true" navbar.-->
+<div class = "bottom" >
+
+<!--Left side of the navbar-->
+<img id = "logo" src = "icons/logo.png"></img>
+
+<input id = "titlebox" placeholder = "New Project" value = "New Project" ></input>
+
+<!--Everything here sticks to the right.-->
+<div class = "right">
+
+<!--Announcements-->
+<button class="uk-button uk-button-default uk-float-left" type="button"><i class="ri-notification-3-fill"><span id = "notification_count" class="uk-badge">69</span></i> </button>
+    <div onmouseenter = "reset_notif_badge()" uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;">
+        <ul class="uk-nav uk-dropdown-nav">
+		<!--Notification Area--><span id = "notification_list" >
+		<p id = "notification_placeholder" style = "margin-top:2.5vmin"><i class="ri-haze-fill"></i><br>Quiet is peace</p>
+		</span>
+		
+		<!--Share / Discover--><button onclick = "share_menu_is_open = true"  uk-toggle = "target: #share_page"  ><i class="ri-compass-discover-line"></i> <span> Share / Discover</span></button>
+        </ul>
+    </div>
+	
+	
+	<!--Toolbox-->
+<button class="uk-button uk-button-default uk-float-left" type="button"><i class="ri-tools-fill"></i></button>
+    <div uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;">
+        <ul class="uk-nav uk-dropdown-nav">
+		<!--Manage--><button >Manage <i class="ri-arrow-drop-right-fill"></i></button>
+			<div uk-dropdown="boundary: .boundary;pos:right-bottom;delay-show:400;delay-hide:50">
+			<ul class="uk-nav uk-dropdown-nav">
+			<button uk-toggle = "target: #script_page" ><i class="ri-arrow-drop-right-fill"></i><i class="ri-file-paper-2-fill"></i> Scripts</button>
+			<button uk-toggle = "target: #style_page"><i class="ri-attachment-line"></i> Stylesheets</button>
+			<button uk-toggle = "target: #config_page"><i class="ri-settings-6-fill"></i>  Project Config</button>
+			</ul>
+		</div>
+		<!--Appearance--><button>Appearance <i class="ri-arrow-drop-right-fill"></i></button>
+		<div uk-dropdown="boundary: .boundary;pos:right-bottom;delay-show:400;delay-hide:50">
+			<ul class="uk-nav uk-dropdown-nav">
+			<button id= "dark_mode_button" onclick = "enable_dark_mode()" ><i class="ri-contrast-2-fill"></i> Dark Mode</button>
+			<button id = "grayscale_button" onclick = "init_visual('grayscale')" ><i class="ri-arrow-drop-right-fill"></i><i class="ri-blur-off-fill"></i> Grayscale</button>
+			<button id = "invert_button" onclick = "init_visual('invert')" ><i class="ri-contrast-fill"></i>  Classic Invert</button>
+			</ul>
+		</div>
+		<button onclick = "reload_page()" ><i class="ri-refresh-line"></i>  Reload</button>
+		<!--Settings--><button uk-toggle = "target: #settings_page"><i class="ri-settings-3-fill"></i> <span> Settings</span></button>
+        </ul>
+    </div>
+
+
+<!--Add-on Menu-->
+<button class="uk-button uk-button-default uk-float-left" type="button"><i class="ri-apps-fill"></i></button>
+    <div uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;">
+       <!--Add-on icon area-->	   <ul class="addon_nav uk-nav uk-dropdown-nav">
+	   <div id = "addon_selection" uk-grid >
+		<p style = "    text-align: center;
+    margin: 5vmin;
+    padding: 1.5vmin;
+    box-sizing: border-box;
+    margin-bottom: -0.5vmin;
+    margin-top: 0vmin;"><i class="ri-emotion-normal-fill"></i><br>No Add-ons?</p>
+		</div>
+		<button uk-toggle = "target: #shop_page" ><i class="ri-shopping-bag-fill"></i> <span>nuken Shop</span></button>
+        </ul>
+    </div>
+
+
+<!--Import / Open-->
+<button class="uk-button uk-button-default uk-float-left" type="button"><i class="ri-folder-open-fill"></i></button>
+    <div uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;" >
+        <ul class="uk-nav uk-dropdown-nav">
+		<!--Import a project--><button id = "import_button"  onclick = "import_project()" ><i class="ri-file-3-fill"></i> <span>Import project</span></button>
+
+		<!--Hiden file element--><input style = "display:none" id = "file_input" type = "file" onclick = "import_project()"></input>
+		<!--Use a template--><button uk-toggle = "target: #template_page"><i class="ri-file-search-line"></i> <span> Use template</span></button>
+		<!--Recover lost work--><button uk-toggle = "target: #recover_page"><span>Recover lost work</span></button>
+        </ul>
+    </div>
+
+
+<!--PLay / Execute / Run-->
+<button  id = "play_button" onclick = "project_write()" class="uk-button uk-button-default uk-float-left" type="button"><i id = "play_icon" class="ri-play-fill"></i></button>
+    <div uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;" id = "play_dropdown" >
+        <ul class="uk-nav uk-dropdown-nav">
+		<!--Enable Auto-run--><button id = "auto_run_button" onclick = "toggle_auto_run()" >Enable Auto-run</button>
+		<button onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/docs','_blank');"  ><i class="ri-book-mark-fill"></i> <span>nuken Docs</span></button>
+		<!--Preview--><button><i class="ri-eye-line"></i> <span>Preview</span> <i class="ri-arrow-drop-right-fill"></i></button>
+		<div uk-dropdown="boundary: .boundary;pos:right-bottom;delay-show:400;delay-hide:50">
+			<ul class="uk-nav uk-dropdown-nav">
+			<!--Seperate Window--><button id = "preview_in_window" onclick = "preview_project('window')" ><i class="ri-window-fill"></i> Seperate window <i class="ri-arrow-drop-left-fill"></i></button>
+			<!--In-workspace--><button id = "preview_in_workspace"onclick = "preview_project('workspace')" ><i class="ri-fullscreen-fill"></i>  In-workspace</button>
+			</ul>
+		</div>
+        </ul>
+    </div>
+
+
+<!--Export / Save -->
+<button class="uk-button uk-button-default uk-float-left"type="button"><i class="ri-save-fill"></i></button>
+    <div uk-dropdown="boundary: .boundary;pos:bottom-center;delay-hide:100;" id = "export_dropdown">
+        <ul class="uk-nav uk-dropdown-nav">
+		    <!--Save to memory--><button id = "memory_save_button" onclick = "save_project_to_memory()" ><i class="ri-bubble-chart-fill"></i> <span>Save to memory</span></button>
+			
+		<!--Export project as .html file--><button uk-toggle = "target: #export_page" ><i style = "font-weight:900" class="ri-external-link-fill"></i> <span> Export project</span></button>
+        </ul>
+    </div>	
+
+
+	
+
+
+</div>
+
+</div>
+
+</nav>
+
+<div id = "workspace">
+
+<button title = "Project Console" id = "console_button"><i class="ri-terminal-fill"><span  id = "console_notification_count" class="uk-badge">69</span></i></button>
+
+		<div uk-drop="mode: click" style = "left:unset!important;right:0;float:right" >
+        <div onmouseenter = "reset_project_console_badge()" id = "project_console_notification_list" class="uk-card uk-card-body uk-card-default">
+        </div>
+    </div>
+
+<div id = "left_frame">
+<div class = "codebox" >
+<code-input id = "stylebox"  lang="css" placeholder = "Drop some inline styling here."></code-input>
+</div>
+<div class = "codebox" >
+<code-input id = "markupbox" lang="html" placeholder = "This is the markup box." ></code-input>
+</div>
+<div class = "codebox" >
+<code-input id = "scriptbox" lang="javascript" placeholder = "Enter some code here." ></code-input>
+</div>
+</div>
+
+<div id = "right_frame">
+<iframe id = "project_frame" src = "" ></iframe>
+</div>
+
+</div>
+
+<div id = "menus">
+
+<div id = "addon_pin_menu">
+</div>
+
+
+<div id = "welcome_page">
+  <div class="uk-modal-dialog uk-modal-body small-modal">
+        <h2 class="uk-modal-title"><i class="ri-user-5-fill"></i> Hello there!</h2>
+		<p>Good to see you. This project was created by <span id = "project_author_text">Chan</span> for <span id = "project_audience_text" >anyone to use</span>. Here's what they had to say about it.</p>
+		<h1 ><span id = "project_description_text">Sorry for the messy code. Perhaps you can clean it up a bit?</span>
+		
+		<span class = "quote"><i class="ri-chat-quote-fill"></i></span>
+		</h1>
+		<!--Exit--><button id = "welcome_close" class="uk-modal-close" style = "background-color:black" type="button"><i class="ri-check-fill"></i> <span>Okay, got it</span></button>
+		
+		<img src = "icons/images/welcome.jpg"></img>
+
+	</div>
+</div>
+
+<!--Settings-->
+<div id="settings_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body small-modal">
+        <h2 class="uk-modal-title"><i class="ri-settings-3-fill"></i> Settings</h2>
+        <!--Exit--><button class="uk-modal-close" style = "background-color:black" type="button"><i class="ri-check-fill"></i> <span>All good to go</span></button>
+
+
+<div class="uk-grid-collapse uk-child-width-expand@s uk-text-center" uk-grid>
+    
+	<div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/settings_1.jpg"></img>
+		<h1><i class="ri-layout-3-fill"></i> <span>Workspace</span></h1>
+		<hr>
+		<div class = "settings_slider">
+		<i class="ri-sun-fill"></i>
+		<input id = "brightness_setting" oninput = "init_visual('brightness')" class = "uk-range" value = "100" type = "range" min="10" max="105"  />
+		</div>
+		
+		<div class = "settings_slider" id = "volume_slider">
+		<i class="ri-volume-up-fill"></i>
+		<input id = "volume_setting" oninput = "set_volume()"  value = "1" min = "0" max = "100" class = "uk-range" type = "range"/>
+		</div>
+	
+<label><input id = "disable_ui_animations_button" onclick = "disable_ui_animations()" class="uk-checkbox" type="checkbox"> <span>Disable UI animations</span></label>
+
+<label><input id = "disable_notifications_check" class="uk-checkbox" type="checkbox" oninput = "disable_notifications()"> <span>Disable <i class="ri-notification-3-fill"></i>  notifications</span></label>	
+
+<label><input oninput = "disable_project_recovery()" id = "disable_recovery_check"class="uk-checkbox" type="checkbox"> <span>Disable project recovery</span></label>		
+
+
+		
+		
+		
+		</div>
+		
+	</div>
+	
+	
+		   <div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/settings_2.jpg"></img>
+		<h1><i class="ri-play-circle-fill"></i> <span>Startup behavior</span></h1>
+		<hr>
+
+		
+		<h2>When I start nuken...</h2>
+<label><input id = "init_dark_mode_button" oninput = "init_dark_mode()" class="uk-checkbox" type="checkbox"> <span>Enable <i class="ri-contrast-2-fill"></i> Dark Mode.</span></label>
+<label><input id = "init_auto_run_button" oninput = "init_auto_run()" class="uk-checkbox" type="checkbox"> Enable Auto-run.</label>
+<label><input id = "mute_audio_button" oninput = "init_mute_audio()" class="uk-checkbox" type="checkbox"> Mute UI audio.</label>
+<label><input id = "remember_workspace_button" oninput = "init_remember_workspace()" class="uk-checkbox" type="checkbox"> Remember my workspace.</label>
+<label><input id = "init_auto_theme_button" oninput = "init_auto_theme()" class="uk-checkbox" type="checkbox"> Ignore my <i class="ri-paint-fill"></i> nuken Theme.</label>
+
+<p>Settings that aren't immediate will take effect when you reload the page.</p>
+			
+		</div>
+		
+		
+		
+		
+	</div>
+	
+	
+	   <div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/settings_3.jpg"></img>
+		<h1><i class="ri-alert-fill"></i> <span> Danger zone</span></h1>
+		<hr>
+		<button ><i class="ri-delete-bin-7-fill"></i><span> Delete recovered work</span></button>
+			
+			<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+			<p>Are you sure about this? Just checking in. Make sure you save anything in the <a uk-toggle target = "#recover_page"><i class="ri-device-recover-fill"></i> <span>Recovery Menu</span></a> before you wipe it completely.</p>
+			<button onclick = "delete_recovered_work(this)" class="uk-drop-close" type="button" uk-close><i class="ri-delete-bin-7-fill"></i> <span>Just do it.</span></button>
+        </div>
+    </div>
+	
+		<p>This gets rid of everything in the <a uk-toggle target = "#recover_page"><i class="ri-device-recover-fill"></i> <span>Recovery Menu</span></a>. You can also turn this feature off completely.</p>
+		
+		<button ><i class="ri-delete-bin-7-fill"></i> <span>Delete everything</span></button>
+		
+		<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+			<p>Are you sure about this? Just checking in. This gets rid of any settings in your workspace. nuken will be reloaded afterwards.</p>
+			<button onclick = "delete_everything(this)" class="uk-drop-close" type="button" uk-close><i class="ri-delete-bin-7-fill"></i> <span>Just do it.</span></button>
+        </div>
+    </div>
+		
+		<p>Deletes all saved <span style = "font-family:Monospace;font-weight:900" >localStorage</span> data - including recovered work, workspace settings, and saved resources.</p>
+		
+	
+		</div>
+	</div>
+
+	
+	
+
+
+</div>
+
+	<p style = "     font-family: 'bold';
+    color: #c0c0c0;
+    display: inline-block;
+    margin: 1vmin;" >nuken | v8.0.0 | b7.9.2022</p>
+	<p onclick = "start_credits()" style = "    font-family: 'bold';
+    color: #c0c0c0;
+    float: right;
+    display: inline-block;
+    margin: 1vmin;cursor:pointer" > <span style = "vertical-align:middle" >Watch the credits</span> <i style = "vertical-align:middle" class="ri-arrow-right-fill"></i> </p>
+
+	</div>
+
+</div>
+	
+
+<!--nuken Shop-->
+<div id="shop_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 id = "shop_page_title" class="uk-modal-title"><i class="ri-shopping-bag-fill"></i> <span>nuken Shop</span></h2>
+       <!--Exit--> <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>I'm done looking</span></button>
+		<!--nuken Shop iframe--><iframe class = "menu_frame" id = "shop_frame" src = "https://nuken.xyz/shop/shop.html" ></iframe>
+    </div>
+</div>
+
+
+<!--Share Menu-->
+<div id="share_page" uk-modal>
+    <div id = "share_page_body" class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title"><i class="ri-team-fill"></i> <span>Find nuken</span></h2>
+        <button class="uk-modal-close" onclick = "share_menu_is_open =false" type="button"><i class="ri-check-fill"></i> <span>I'm all caught up</span></button>
+
+<div id = "share_page_container">
+
+<div id = "left">
+
+<div class = "widget">
+<img src = "icons/images/share.jpg" ></img>
+<h1>Join the community</h1>
+<p>Welcome to the <b><i class="ri-share-fill" style = "font-size:2.25vmin"></i> Share Menu</b>. Looking to join us? Pick a platform and hop in!</p>
+</div>
+
+<div class = "grid">
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/discord');" style = "background-color:#404eed" class = "app">
+<i class="ri-discord-fill"></i>
+<h1 style = "font-family:'discord';" >Discord</h1>
+</div>
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/github');" style = "background-color:#161b22" class = "app">
+<i class="ri-github-fill"></i>
+<h1 style = "font-family:'github';" >GitHub</h1>
+</div>
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/twitter');" style = "background-color:#1DA1F2" class = "app">
+<i class="ri-twitter-fill"></i>
+<h1 style = "font-family:Helvetica;" >Twitter</h1>
+</div>
+<br>
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/reddit');" style = "background-color:#FF5700" class = "app">
+<i class="ri-reddit-fill"></i>
+<h1 style = "font-family:Verdana;" >Reddit</h1>
+</div>
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/twitch');" style = "background-color:#9147ff" class = "app">
+<i class="ri-twitch-fill"></i>
+<h1 style = "font-family:'twitch';" >Twitch</h1>
+</div>
+
+<div onclick = "popup_sound.currentTime=0;popup_sound.play();window.open('https://nuken.xyz/instagram');" style = "background-color:#C13584" class = "app">
+<i class="ri-instagram-line"></i>
+<h1 style = "font-family:'instagram';" >Instagram</h1>
+</div>
+
+</div>
+
+</div>
+
+<div id = "right">
+<h1>Share my project</h1>
+<p>If you want to share your work, try <b><i class="ri-share-box-fill" style = "font-size:2.25vmin"></i> <span>exporting it</span></b>. If you'd rather just take a picture, we're here for that too.</p>
+<button id = "project_snapshot_button" onclick = "write_preview()"><i class="ri-camera-fill"></i> <span> Take a snapshot</span></button>
+<span id = "share_project_container">
+<iframe src = "" id = "share_frame"></iframe>
+</span>
+<div id = "share_project_bar">
+<i id = "download_project_share" onclick = "download_preview()" class="ri-download-2-fill"></i>
+<i id = "copy_project_share" onclick = "copy_preview()" class="ri-checkbox-multiple-blank-line"></i>
+</div>
+<p style = "    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 2vmin;
+    color: lightgray;
+    margin-top: -0.5vmin;
+    font-family: 'bold';">Your pic should appear in the box above.</p>
+</div>
+</div> 
+    </div>
+</div>
+
+
+<!--Script Management Menu-->
+<div id="script_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 id = "script_page_title" class="uk-modal-title"><i class="ri-file-paper-2-fill"></i> <span>Script Management</span></h2>
+        <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>Looks good to me</span></button>
+		
+	<!--This is where all of the resource selection icons are written to-->
+	<div id = "script_selection" class = "menu_scroll">
+</div>	
+<div id = "script_menu" class = "menu_blurb">
+<!--Resource title--><h1 id = "script_title">Loading...</h1>
+<!--The little info bar underneath the title-->
+<div class = "menu_status_bar">
+
+<!--The resource location, whether saved to the device, or from a URL-->
+<span id = "script_location" >Loading...</span>
+
+<!--Can this resource be used online of offline?-->
+<div id = "script_status">
+<i title = "This resource can be used offline." class="ri-cloud-off-fill"></i>
+</div>
+<!--If this resource is saved to the device, or loaded from an HTTPS location-->
+<div id = "script_security"> 
+<i title = "This resource is from a secure location." class="ri-shield-check-fill"></i>
+</div>
+
+</div>
+
+<!--Resource description / information-->
+<p id = "script_description">Loading...</p>
+
+<!--Documentation / further reading button-->
+<button id = "script_documentation" ><i class="ri-book-mark-fill"></i> <span>Documentation</span></button>
+<button id = "script_direct_view" ><i class="ri-eye-line"></i> <span>View</span></button>
+<button id = "script_donate" ><i class="ri-hand-heart-fill"></i> <span>Donate</span></button>
+
+</div>
+
+<div id = "custom_script_input" class = "menu_blurb" >
+<h1 id = "custom_script_title" contenteditable = "true">Custom</h1>
+
+<div class = "menu_status_bar">
+<span id = "custom_script_location" > Not recognized </span>
+
+<!--Can this resource be used online of offline?-->
+<div id = "custom_script_status">
+<i title = "This resource can be used offline." class="ri-checkbox-blank-circle-fill"></i>
+</div>
+<!--If this resource is saved to the device, or loaded from an HTTPS location-->
+<div id = "custom_script_security"> 
+<i title = "This resource is from a secure location." class="ri-checkbox-blank-circle-fill"></i>
+</div>
+
+</div>
+
+<textarea id = "custom_script_textarea" placeholder = '<script src = "https://your-custom-resource.com/script.js" ></script>'></textarea>
+<button ><i class="ri-information-line"></i> <span>What is this?</span></button>
+	<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+			<p>This option is for our more advanced users. If you'd like to use a resource that isn't already offered, try entering the 
+			<span style = "font-family:monospace;font-weight:900"><a href = "https://www.w3schools.com/tags/tag_script.asp#:~:text=Definition%20and%20Usage,and%20dynamic%20changes%20of%20content." target = "_blank">script</a></span> 
+			tags here. When you're finished, click
+			<a onclick = "document.getElementById('load_custom_style_button').click()">load my resource</a>
+			and you're good to go! If you're looking to append 
+			<span style = "font-family:monospace;font-weight:900"><a href = "https://www.w3schools.com/tags/tag_meta.asp" target = "_blank">meta</a></span> tags to your project, check out the 
+			<a href = "" uk-toggle target = "#config_page"><i class = "ri-settings-6-fill"></i> <span>Project Config Menu</span></a>.</p>
+			<button  class="uk-drop-close" type="button" uk-close>Okay, thanks</button>
+        </div>
+    </div>
+<button id = "load_custom_script_button" onclick = "fill_in_script_info()" ><i class="ri-check-fill"></i> <span>Load my resource</span></button>
+</div>
+
+    </div>
+	</div>
+
+<!--Stylesheet Management Menu-->
+<div id="style_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 id = "style_page_title" class="uk-modal-title"><i class="ri-attachment-fill"></i> <span>Stylesheet Management</span></h2>
+        <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>Looks good to me</span></button>
+		
+	<!--This is where all the resource selection icons are written to-->
+	<div id = "style_selection" class = "menu_scroll">
+</div>	
+<div id = "style_menu" class = "menu_blurb">
+<!--Resource title--><h1 id = "style_title">Loading...</h1>
+<!--The little info bar underneath the title-->
+<div class = "menu_status_bar">
+
+<!--Where the resource is saved, whether on the device, or from an external location-->
+<span id = "style_location" title = "This resource is saved to this device." >Loading...</span>
+
+<!--Can this resource be used offline?-->
+<div id = "style_status"> 
+<i title = "This resource can be used offline." class="ri-cloud-off-fill"></i>
+</div>
+<!--Whether this resource is from this device, or an HTTPS location-->
+<div id = "style_security">
+<i title = "This resource is from a secure location." class="ri-shield-check-fill"></i>
+</div>
+
+</div>
+<!--Resource description / information-->
+<p id = "style_description" >Loading...</p>
+
+<!--Documentation / further reading-->
+<button id = "style_documentation" ><i class="ri-book-mark-fill"></i> <span>Documentation</span></button>
+<button id = "style_direct_view" ><i class="ri-eye-line"></i> <span>View</span></button>
+<button id = "style_donate" ><i class="ri-hand-heart-fill"></i> <span>Donate</span></button>
+
+</div>
+
+<div id = "custom_style_input" class = "menu_blurb" >
+<h1 id = "custom_style_title" contenteditable = "true">Custom</h1>
+
+<div class = "menu_status_bar">
+<span id = "custom_style_location" > Not recognized </span>
+
+<!--Can this resource be used online of offline?-->
+<div id = "custom_style_status">
+<i title = "This resource can be used offline." class="ri-checkbox-blank-circle-fill"></i>
+</div>
+<!--If this resource is saved to the device, or loaded from an HTTPS location-->
+<div id = "custom_style_security"> 
+<i title = "This resource is from a secure location." class="ri-checkbox-blank-circle-fill"></i>
+</div>
+
+</div>
+
+<textarea id = "custom_style_textarea" placeholder = '<link rel = "stylesheet" href = "https://your-custom-resource.com/stylesheet.css"/> '></textarea>
+<button ><i class="ri-information-line"></i> <span>What is this?</span></button>
+	<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+            <p>This option is for our more advanced users. If you'd like to use a resource that isn't already offered, try entering the 
+			<span style = "font-family:monospace;font-weight:900"><a href = "https://www.w3schools.com/tags/tag_link.asp#:~:text=The%20tag%20defines%20the,a%20favicon%20to%20your%20website." target = "_blank">link</a></span> 
+			tags here. When you're finished, click
+			<a onclick = "document.getElementById('load_custom_style_button').click()">load my resource</a>
+			and you're good to go! If you're looking to append 
+			<span style = "font-family:monospace;font-weight:900"><a href = "https://www.w3schools.com/tags/tag_meta.asp" target = "_blank">meta</a></span> tags to your project, check out the 
+			<a href = "" uk-toggle target = "#config_page"><i class = "ri-settings-6-fill"></i> <span>Project Config Menu</span></a>.</p>
+			<button  class="uk-drop-close" type="button" uk-close>Okay, thanks</button>
+        </div>
+    </div>
+<button id = "load_custom_style_button" onclick = "fill_in_style_info()" ><i class="ri-check-fill"></i> <span>Load my resource</span></button>
+</div>
+
+    </div>
+</div>
+
+<!--Project Config Menu-->
+<div id="config_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title"><i class="ri-settings-6-fill"></i> <span>Project Config</span></h2>
+        <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>All set</span></button>
+		
+<div class="uk-grid-collapse uk-child-width-expand@s uk-text-center" uk-grid>
+    
+	<div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/config_1.jpg"></img>
+		<h1><i class="ri-archive-drawer-fill"></i> <span> Add project location</span></h1>
+		<hr>
+		<p>Project root directory</p>
+		<select>
+		<option><i class="ri-folder-5-fill"></i> A folder on my device</option>
+		<option><i class="ri-global-fill"></i> Somewhere on the web</option>
+		</select>
+		<input oninput = "init_custom_file_paths()" id = "custom_file_path_input" style = "border-radius:0vmin 0vmin 1vmin 1vmin" placeholder = "file:///C:/  . . .  Enter the absolute file path here."></input>
+		
+		<button onclick = "window.open(document.getElementById('custom_file_path_input').value.toString(),'_blank');popup_sound.currentTime = 0;popup_sound.play()" style = "    margin-top: 2.5vmin;
+    border-radius: 0.75vmin;"><i class="ri-link"></i> <span>Test this location</span></button>
+		
+		<button  class = "uk-position-bottom-center" uk-tooltip = "Hello" ><i class="ri-information-line"></i> <span>What is this?</span></button>
+		<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+            <p>Where will you save your project? If you're working with file paths, this will tell nuken where to look. Enter your project's <a href = "https://www.seobility.net/en/wiki/Root_Directory#" target = "_blank">root directory</a> (local or online) in the boxes above, and nuken will fill in any relative <a href = "https://www.w3schools.com/html/html_filepaths.asp" target = "_blank">file paths</a> you use. This is super helpful when you're working with dependencies.</p>
+			<button class="uk-drop-close" type="button" uk-close>Okay, thanks</button>
+        </div>
+    </div>
+		</div>
+		<div class="uk-inline">
+</div>
+	</div>
+	
+	
+		   <div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/config_2.jpg"></img>
+		<h1><i class="ri-list-check-2"></i> <span>Set project details</span></h1>
+		<hr>
+		<p>Intended device / audience</p>
+		<input id = "project_audience_box" placeholder = "What / who is this intended for?" ></input>
+		<p>Project author</p>
+		<input id = "project_author_box" placeholder = "Who created this project?" ></input>
+		<p>Shoutout message</p>
+		<input id = "project_description_box" placeholder = "What would you like to say?" ></input>
+		<button class = "uk-position-bottom-center"><i class="ri-information-line"></i> <span>What does this do?</span></button>
+		<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default">
+            <p>Have something to say when a user imports your nuken project? Enter that information here. Some projects work better with different audiences and on different devices.</p>
+			<button class="uk-drop-close" type="button" uk-close>Okay, got it</button>
+        </div>
+    </div>
+		</div>
+	</div>
+	
+	
+	   <div>
+        <div class="uk-background-muted uk-padding">
+		<img src = "icons/images/config_3.jpg"></img>
+		<h1><i class="ri-price-tag-3-fill"></i> <span>Configure meta tags</span></h1>
+		<hr>
+		<p>You don't have to add header tags here, nuken does that already. Just add whatever else you want 😎</p>
+		<textarea id = "metabox" placeholder = "Go wild with those meta tags, friend"></textarea>
+		<button class = "uk-position-bottom-center" onclick = "popup_sound.currentTime = 0;popup_sound.play();window.open('https://www.w3schools.com/tags/tag_meta.asp','_blank');" ><i class="ri-information-line"></i> <span>What's a meta tag?</span></button>
+		</div>
+	</div>
+	
+	
+
+
+</div>
+</div>
+</div>
+
+<!--Template Menu-->
+<div id="template_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 id = "template_page_title" class="uk-modal-title"><i class="ri-file-search-fill"></i> <span>Pick a Template</span></h2>
+        <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>Alright, let's go</span></button>
+		
+	<!--You know the drill, this is where the template icons are written to-->
+	<div id = "template_selection" class = "menu_scroll">
+</div>	
+<div id = "template_selection" class = "menu_scroll">
+</div>	
+<div id = "template_menu" class = "menu_blurb">
+<!--Resource title--><h1 id = "template_title">Loading...</h1>
+<!--The little info bar underneath the title-->
+<div class = "menu_status_bar">
+
+<!--Where the resource is saved, whether on the device, or from an external location-->
+<span id = "template_location" title = "This resource is saved to this device." >Loading...</span>
+
+<!--Can this resource be used offline?-->
+<div id = "template_status"> 
+<i title = "This resource can be used offline." class="ri-cloud-off-fill"></i>
+</div>
+<!--Whether this resource is from this device, or an HTTPS location-->
+<div id = "template_security">
+<i title = "This resource is from a secure location." class="ri-shield-check-fill"></i>
+</div>
+
+</div>
+<!--Resource description / information-->
+<p id = "template_description" >Loading...</p>
+
+<!--Documentation / further reading-->
+<button id = "template_visit" ><i class="ri-book-mark-fill"></i> <span>Visit Creator</span></button>
+<button id = "template_direct_view" ><i class="ri-eye-line"></i> <span>View</span></button>
+<button id = "template_donate" ><i class="ri-hand-heart-fill"></i> <span>Donate</span></button>
+
+</div>
+
+<div id = "custom_template_input" class = "menu_blurb" >
+
+<h1>Enter a link</h1>
+<input id = "custom_template_source" placeholder = "https://nuken.xyz/templates/default.js" ></input>
+<p>nuken Templates offer a neat and simple way to get creating - with just one click. Enter the link to the template pack, and you're good to go.</p>
+
+<button onclick = "add_template(document.getElementById('custom_template_source').value)" ><i class="ri-file-add-line"></i> <span>Load this template</span></button>
+<button onclick = "popup_sound.currentTime = 0;popup_sound.play();window.open(document.getElementById('custom_template_source').value, '_blank')" id = "template_direct_view" ><i class="ri-eye-line"></i> <span>View source</span></button>
+
+</div>
+
+    </div>
+</div>
+
+<!--Export Menu-->
+<div id="export_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title"><i style = "font-weight:900" class="ri-external-link-fill"></i> <span>Export project</span></h2>
+        <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>All good</span></button>
+		
+		<div class = "export_top_banner">		
+		<input id = "filebox" placeholder = "Enter a file name here." value = "index.html"></input>
+		<!--Selected resource previews-->
+		<!--Style--><img uk-toggle target = "#style_page" id = "style_preview" class = "resource_preview" src = "icons/blank.png" ></img>
+		<!--Markup--><img id = "markup_preview" class = "resource_preview" src = "icons/html5.png" ></img>
+		<!--Script--><img uk-toggle target = "#script_page" id = "script_preview" class = "resource_preview" src = "icons/blank.png" ></img>
+		
+		<!--Export button--><button onclick = "export_project()" id = "export_button" ><i class="ri-external-link-fill"></i> <span>Export my project</span></button>
+		
+		</div>
+		<hr>
+		
+<!--Reccommended actions scroller-->
+<p style = "margin: 0;font-family: 'bold';color: #a1a1a1;font-size: 2vmin;margin-bottom: -0.5vmin;">While you're here...</p>
+	
+<div class = "export_actions_scroll"> 
+
+<!--Set a passphrase-->	
+<div style = "display:none" class="widget">
+<img src="icons/images/export_1.jpg">
+<h1><i class="ri-file-lock-fill"></i> <span> A secret to everyone</span></h1>
+<p>This isn't a hardcore security measure - but if you'd like to keep your projects under wraps, try setting a passphrase.</p>
+<button style = "padding-bottom:2vmin" class = "uk-position-bottom-center" ><i class="ri-door-lock-fill"></i> <span>Set a passphrase</span></button>
+</div>
+
+<!--Open the Config Menu-->
+<div class="widget">
+<img src="icons/images/export_2.jpg">
+<h1><i class="ri-folder-settings-fill"></i> <span>Configure your project</span></h1>
+<p>Before you export your project, it's a good idea to visit the <b><i class="ri-settings-6-fill"></i> <span>Project Config Menu</span></b>.</p>
+<button uk-toggle target = "#config_page" style = "padding-bottom:2vmin" class = "uk-position-bottom-center" ><i style = "font-weight:900" class="ri-settings-6-fill"></i> <span>Project Config Menu</span></button>
+</div>
+
+<!--View compiled code-->
+<div class="widget">
+<img src="icons/images/export_3.jpg">
+<h1><i class="ri-article-fill"></i> <span> Is you reading?</span></h1>
+<p>See the code behind your final product before you ship. Correct any errors or typos you find before it's out there!</p>
+<button onclick = "view_project_compiled()" style = "padding-bottom:2vmin" class = "uk-position-bottom-center" ><i style = "font-weight:900" class="ri-terminal-fill"></i> <span>View my compiled code</span></button>
+</div>
+
+<!--Open the Share Menu-->
+<div class="widget">
+<img src="icons/images/export_4.jpg">
+<h1><i class="ri-question-answer-fill"></i> <span> Grab your soapbox</span></h1>
+<p>Ready to share your work with the rest of us? Head on over to the <b><i class="ri-share-fill" style = "font-size:2.25vmin"></i> Share Menu</b>.</p>
+<button uk-toggle = "target:#share_page" style = "padding-bottom:2vmin" class = "uk-position-bottom-center" ><i class="ri-share-fill"></i> <span>Open the Share Menu</span></button>
+</div>
+
+</div>		
+		
+    </div>
+</div>
+
+<!--Recover Menu-->
+<div id="recover_page" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title"><i class="ri-device-recover-fill"></i> <span>Recover lost work</span></h2>
+       <!--Exit--> <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>I'm good</span></button>
+	   
+	   
+	   <div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
+    
+	<div>
+        <div class="uk-background-muted uk-padding" style = "display:inline-block;width:30%">
+		<img src = "icons/images/recover.jpg"></img>
+		<h1>Lose something?</span></h1>
+		<p>We gotchu, fam. If you accidentally quit without saving your work, try recovering it here.</p>
+		<hr>
+		<p>But remember, we can't catch everything. Make sure you're still <a uk-toggle = "#export_page">saving your work</a> - it's just good practice. 😎</p>
+		
+<div id = "recover_bar">
+<button id = "recover_project_button" uk-toggle target = "#recover_page" onclick = "recover_project()" ><i class="ri-cloud-off-fill"></i> <span> You've disabled this feature.</span></button>
+<p
+><span id = "recover_time" ></span></p>
+</div>
+		
+		<button  class = "uk-position-bottom-center" uk-tooltip = "Hello" ><i class="ri-information-line"></i> <span>What is this?</span></button>
+		<div uk-drop="mode: click">
+        <div class="uk-card uk-card-body uk-card-default uk-button">
+            <p>nuken utilizes your device's <span style = "font-family:monospace;font-weight:900"><a href = "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target = "_blank">localStorage</a></span>, allowing you to recover lost work. This is helpful if you accidentally quit or lose progress. Your projects are never shared or viewed by anyone else (unless you share them yourself, via the <a uk-toggle = "#share_page" ><i class="ri-share-fill"></i> <b><span>Share Menu</span></b></a>). <br><br>If you don't like this recovery feature, it's no big deal! Visit the <a uk-toggle = "#settings_page"><i class="ri-settings-3-fill"></i> <span><b>Settings Menu</b></span></a> and see what else we can do for you.</p>
+			<button class="uk-drop-close" type="button" uk-close>Okay, got it</button>
+        </div>
+    </div>
+	
+		</div>
+		
+		
+		
+		<div id = "recover_text" class="uk-background-muted" style = "    display: inline-block;
+    width: 64%;
+    padding: 0;">
+	<iframe id = "recover_frame" src = ""></iframe>
+		</div>
+		
+		
+
+
+</div>
+    </div>
+</div>
+
+</div>
+<div id = "addon_sandbox">
+
+
+
+</div>
+
+
+
+</div>
+
+</div>
+
+<div id = "credits">
+<h1>Project Development</h1>
+<a href = "https://chanmrotzek.com" target = "_blank"  >Chan Mrotzek</a>
+<a href = "https://luckycloverdev.github.io" target = "_blank" >Jeremiah Dobes</a>
+<a href = "https://twitter.com/rhougi" target = "_blank">Reece Filipinas</a>
+<a href = "https://meif.xyz" target = "_blank" >Robyn Meif</a>
+
+<br><br>
+
+<h1>Product Testing / Feedback</h1>
+<a href = "https://nathanlackie.net" target = "_blank" >Nathan Lackie</a>
+<a>Joe Mrotzek</a>
+
+
+<br><br>
+
+<h1>Credits Theme</h1>
+<a href = "https://soundcloud.com/user-109561028" target = "_blank" >Magmi Soundtracks</a>
+
+<br><br>
+<h1>Special Thanks</h1>
+<a href = "http://brettdocherty.com"target = "_blank" >Brett Docherty</a>
+<a>Aristotle</a>
+<a href = "http://itemcloud.org"target = "_blank" >itemcloud.org</a>
+<a href = "https://aldergrovecharter.org"target = "_blank" >Alder Grove Charter School</a>
+<a href = "https://discord.gg/B8dTyfa"target = "_blank" >HouseFire Studios</a>
+<a href = "https://nuken.xyz/community"target = "_blank" >Our wonderful community</a>
+
+
+
+</div>
+
+<div id = "credits_end">
+<p style = "    opacity: 50%;
+    font-size: 2vmin;
+    margin: 0px;
+    margin-bottom: 1vmin;">Thanks for using nuken.</p>
+<button onclick = "end_nuken()" style="    background-color: white;
+    color: black;
+    font-family: 'bold';
+    padding: 2vmin;
+    border: none;
+    border-radius: 1.5vmin;
+    font-size: 2vmin;">No problem, have a nice day</button>
+</div>
+
+</body>
+<script src = "scripts/notification_system.js" ></script>
+<script src = "scripts/resource_push.js" ></script>
+<script src = "https://nuken.xyz/resources/scripts/resource_index.js" ></script>
+<script src = "scripts/project_preview.js" ></script>
+<script src = "scripts/template_system.js"></script>
+<script src = "scripts/import_system.js"></script>
+<script src = "scripts/export_system.js"></script>
+<script src = "scripts/addon_system.js"></script>
+<script src = "scripts/theme_system.js"></script>
+<script src = "scripts/recovery_system.js"></script>
+<script src = "scripts/init_system.js"></script>
+<script>
+
+var workspace_is_inverted = false;
+var workspace_is_grayscaled = false;
+var workspace_is_in_dark_mode = false;
+
+var global_brightness;
+var global_invert = 0;
+var global_grayscale = 0;
+
+var date = new Date();	
+var hour = date.getHours();
+var minute = date.getMinutes();
+var second = date.getSeconds();
+var timestamp = "["+hour+":"+minute+":"+second+"]";
+
+var canvas_url = "";
+
+var left_frame = document.getElementById('left_frame');
+var right_frame = document.getElementById('right_frame');
+
+var shop_frame = document.getElementById('shop_frame');
+var recover_frame = document.getElementById('recover_frame');
+var project_frame = document.getElementById('project_frame');
+
+var stylebox = document.getElementById('stylebox');
+var markupbox = document.getElementById('markupbox');
+var scriptbox = document.getElementById('scriptbox');
+var auto_run_is_auto = false;
+
+
+var open_sound = new Audio('audio/open.mp3');
+var close_sound = new Audio('audio/close.mp3');
+var enable_sound = new Audio('audio/enable.mp3');
+var disable_sound = new Audio('audio/disable.mp3');
+var popup_sound = new Audio('audio/popup.mp3');
+var success_1 = new Audio('audio/1.mp3');
+var success_2 = new Audio('audio/2.mp3');
+var notif_error_sound = new Audio('audio/notif_error.mp3');
+var help_sound = new Audio('audio/help.mp3');
+var exit_help_sound = new Audio('audio/exit.mp3');
+var trash_sound = new Audio('audio/trash.mp3');
+var snap_sound = new Audio('audio/snap.mp3');
+
+var credits_music = new Audio('audio/credits.mp3');
+credits_music.volume = 1;
+
+
+var addons_directory = "";
+var addons_index = [];
+
+var recovery_allowed = true;
+var ui_animations_are_disabled = false;
+
+
+var nuken_location = document.location.href.toString();
+
+if (nuken_location.includes('index.html#')){
+nuken_location = nuken_location.replace('index.html#', "");
+} else {
+nuken_location = nuken_location.replace('index.html', "");
+}
+
+
+
+window.onload = function(){
+
+push_custom_template();
+
+//blah
+init_localstorage();
+
+init_online();
+
+//Remove item
+//localStorage.removeItem("lastname");
+//Remove all items
+//localStorage.clear();
+
+
+UIkit.modal('#recover_page').show();
+UIkit.modal('#share_page').show();
+setTimeout(function(){
+UIkit.modal('#recover_page').hide();
+UIkit.modal('#share_page').hide();
+},1);
+setTimeout(function(){
+document.body.style.opacity = "100%";
+setTimeout(function(){
+},500);
+},500);
+
+$( "#workspace" ).keyup(function() {
+if (auto_run_is_on){
+project_write();
+}
+});
+
+if (!navigator.onLine){
+shop_frame.src = "";
+shop_frame.outerHTML = offline_text;
+}
+
+project_frame.src = "";
+
+recover_frame.outerHTML = recover_text;
+
+push_custom_script();
+push_custom_style();
+
+init_project_recover();
+init_addons();
+init_theme();
+init_templates();
+
+window.location.replace('#');
+setTimeout(function(){
+ready_to_notify = true;
+},500);
+
+var notif_setting = JSON.parse(localStorage.getItem('disable_notifications'));
+
+if (notif_setting){
+document.getElementById('disable_notifications_check').checked = true;
+ready_to_notify = false;
+} else {
+}
+
+if (recovery_allowed == false){
+
+notify('Project recovery is disabled by the user.');
+document.getElementById('disable_recovery_check').checked = true;
+} else {
+}
+
+
+
+};
+
+
+var clipboard_text = "";
+
+
+var enable_dark_mode = function(){
+
+if (workspace_is_in_dark_mode){
+
+disable_sound.currentTime = 0;
+disable_sound.play();
+
+  $("#dark_mode_stylesheet").remove();
+
+document.getElementById('dark_mode_button').innerHTML = '<i class="ri-contrast-2-fill"></i> Dark Mode';
+document.getElementById('dark_mode_button').style.backgroundColor = "#c0c0c050";
+
+workspace_is_in_dark_mode = false;
+} else {
+
+enable_sound.currentTime = 0;
+enable_sound.play();
+
+notify('Dark Mode enabled.');
+
+ var cssLink = $("<link>");
+  $("head").append(cssLink); //IE hack: append before setting href
+
+  cssLink.attr({
+    rel:  "stylesheet",
+    type: "text/css",
+    href: 'styles/dark_mode_stylesheet.css',
+	id: 'dark_mode_stylesheet'
+  });
+
+document.getElementById('dark_mode_button').innerHTML = '<i class="ri-contrast-2-fill"></i> Dark Mode';
+document.getElementById('dark_mode_button').style.backgroundColor = "#76db94";
+
+
+workspace_is_in_dark_mode = true;
+}
+
+};
+
+var init_online = function(){
+
+if (!navigator.onLine){
+
+setTimeout(function(){
+notify('nuken is offline. Some external resources may not work without an internet connection.');
+},550);
+
+document.getElementById('share_page_container').innerHTML = offline_text;
+
+document.getElementById('script_page_title').innerHTML = '<i class="ri-file-paper-2-fill"></i> <span>Script Management</span> <span class = "offline-ind" >OFFLINE</span>';
+document.getElementById('style_page_title').innerHTML = '<i class="ri-attachment-fill"></i>  <span>Stylesheet Management</span> <span class = "offline-ind" >OFFLINE</span>';
+document.getElementById('shop_page_title').innerHTML = '<i class="ri-shopping-bag-fill"></i> <span>nuken Shop</span> <span class = "offline-ind" >OFFLINE</span>';
+document.getElementById('template_page_title').innerHTML = '<i class="ri-file-search-fill"></i> <span>Pick a Template</span> <span class = "offline-ind" >OFFLINE</span>';
+
+
+}
+
+};
+
+var start_credits = function(){
+UIkit.modal('#settings_page').toggle();
+document.body.style.backgroundColor = "black";
+document.documentElement.style.backgroundColor = "black";document.documentElement.style.transition = "all 0.5s, background-image 1.5s";
+document.body.style.transition = "all 0.5s, background-image 1.5s";
+document.getElementById('nuken').style.transition = "all 20s, transform-origin 0s, border-radius 2.5s";
+document.getElementById('nuken').style.filter = "blur(100px)";
+document.getElementById('nuken').style.pointerEvents = "none";
+document.getElementById('nuken').style.borderRadius = "100%";
+document.getElementById('nuken').style.transform = "scale(0.75)";
+document.getElementById('nuken').style.transformOrigin = "center 30%";
+document.getElementById('nuken').style.opacity = "0%";
+
+setTimeout(function(){
+credits_music.currentTime = 0;
+credits_music.play();
+credits_music.onended = function(){
+end_nuken();
+};
+setTimeout(function(){
+document.getElementById('credits').style.top = "-210%";
+document.getElementById('credits').style.pointerEvents = "auto";
+document.getElementById('credits').style.opacity = "100%";
+document.getElementById('credits').style.filter = "blur(0px)";
+},0);
+setTimeout(function(){
+document.body.style.backgroundImage = "url('icons/black.png')";
+document.documentElement.style.backgroundImage = "url('icons/black.png')";
+setTimeout(function(){
+document.getElementById('credits').style.filter = "blur(100px)";
+
+//credits are done
+setTimeout(function(){
+document.getElementById('credits_end').style.opacity = "100%";
+document.getElementById('credits_end').style.pointerEvents = "auto";
+document.getElementById('credits_end').style.filter = "blur(0px)";
+document.body.style.backgroundImage = "url('icons/splash.png')";
+document.documentElement.style.backgroundImage = "url('icons/splash.png')";
+},5000);
+},35000);
+},17500);
+},500);
+};
+
+var reload_page = function(){
+document.body.style.backgroundColor = "black";
+document.documentElement.style.backgroundColor = "black";
+document.getElementById('nuken').style.transition = "all 1.5s, transform-origin 0s";
+document.getElementById('nuken').style.transitionTimingFunction = "cubic-bezier(.8,0,0,1.1)";
+document.getElementById('nuken').style.filter = "blur(100px)";
+document.getElementById('nuken').style.pointerEvents = "none";
+document.getElementById('nuken').style.borderRadius = "100%";
+document.getElementById('nuken').style.transform = "scale(0.75)";
+document.getElementById('nuken').style.transformOrigin = "center 30%";
+document.getElementById('nuken').style.opacity = "0%";
+setTimeout(function(){
+window.location.reload(true);
+},1000);
+};
+
+var end_nuken = function(){
+enable_sound.currentTime = 0;
+enable_sound.play();
+setInterval(credits_fade,100);
+document.getElementById('credits_end').style.filter = "blur(100px)";
+document.getElementById('credits_end').style.opacity = "0%";
+setTimeout(function(){
+window.location.reload(true);
+},2500);
+};
+
+var interval;
+var timeout;
+
+function credits_fade() {
+
+
+      var sounds = credits_music;
+
+        var newVolume = sounds.volume - 0.1;
+
+        // Check if the newVolume is greater than zero
+        if(newVolume >= 0){
+            sounds.volume = newVolume;
+        }
+        else{
+            // Stop fade
+            clearInterval(interval);
+            sounds.volume = 0;
+            sounds.pause();
+            sounds.currentTime = 0;
+        }
+
+}
+
+  let needsFocusFix = false;
+  let triggeringProgrammaticBlur = false;
+
+  window.onblur = function(event){
+  //console.log('blurred');
+    if(!triggeringProgrammaticBlur) {
+      needsFocusFix = true;
+    }
+  };
+
+  window.onfocus = function(event){
+  //console.log('focused');
+    if(needsFocusFix) {
+      needsFocusFix = false;
+      triggeringProgrammaticBlur = true;
+      setTimeout(function () {
+        window.blur();
+        window.focus();
+        setTimeout(function () {
+          triggeringProgrammaticBlur = false;
+        }, 250);
+      }, 250);
+    }
+  };
+
+
+
+</script>
+
+
+</html>

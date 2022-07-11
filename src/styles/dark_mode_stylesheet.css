@@ -1,0 +1,91 @@
+body, html {
+transition: all 0.5s;
+}
+
+#workspace {
+background-color:black;
+}
+
+#left_frame {
+filter:invert(100%) hue-rotate(180deg);
+}
+
+#left_frame .codebox:first-of-type {
+    border-radius: 0px 2.5vmin 0vmin 0vmin;
+}
+
+#left_frame::-webkit-scrollbar {
+border-radius:100vmin;
+width:0.5vmin;
+}
+
+
+#left_frame::-webkit-scrollbar-thumb {
+border-radius:100vmin;
+
+}
+
+.uk-modal {
+filter:invert(100%) hue-rotate(180deg) brightness(110%);
+    background-color: #ffffffa0;
+}
+
+.uk-modal-body {
+outline:5px solid gray;
+}
+
+img {
+filter:invert(100%) hue-rotate(180deg);
+}
+
+#addon_selection img {
+filter:invert(0) hue-rotate(0) brightness(80%);
+}
+
+.addon_pin {
+    background-color: black;
+    border: 5px solid gray;
+}
+
+.addon_pin img {
+    filter: invert(0) hue-rotate(0deg) brightness(90%);
+	border-radius:1.5vmin;
+}
+
+.addon_maximize_button {
+    background-color: black;
+    padding: 0px;
+    padding-left: 0.5vmin;
+    border-radius: 1.5vmin 0px 0px 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#logo {
+filter:invert(0%);
+}
+
+.uk-dropdown {
+background-color:#151515;
+}
+
+
+#template_selection img, #script_selection img, #style_selection img {
+    filter: invert(100%) hue-rotate(180deg) brightness(90%);
+}
+
+.addon_page iframe, #recover_page iframe, #share_page canvas {
+    filter: invert(100%) hue-rotate(180deg) brightness(90%);
+}
+
+#console_button {
+background-color:#151515;
+}
+
+#project_console_notification_list {
+    background-color: #151515a0;
+}
+
+#share_page canvas {
+    filter: invert(100%) hue-rotate(180deg) brightness(100%);
+}
