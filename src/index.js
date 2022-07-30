@@ -284,9 +284,12 @@ app.on('window-all-closed', () => {
 
 // 👇 Comment out the code below if you want to enable DevTools in nuken. 👇
 
+
+/*
 app.on("browser-window-created", (e, win) => {
    win.removeMenu();
 });
+*/
 
 
 
