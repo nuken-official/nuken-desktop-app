@@ -32,11 +32,12 @@ var notify = function(message, time, priority){
 if (ready_to_notify){
 //If we're ready to show notifications
 
+//update the notification count
 number_of_notifs=number_of_notifs+1;
 
 notification_count = notification_count+1;
 
-
+//display the badge, show the number 
 document.getElementById('notification_count').style.display = "inline-block";
 document.getElementById('notification_count').innerHTML = notification_count;
 
@@ -49,9 +50,14 @@ notification_list.innerHTML +=
 
 
 check_notif_count();
+//update the notif count in the system so nuken can check to see if the empty placeholder should be displayed
+
+//log it to the actual program console
+console.log(message);
 
 } 
 
+//get the user's setting from localstorage, if this is false don't show any notifs at all and overwrite the menu with some placeholder text
 var disabled =  JSON.parse(localStorage.getItem('disable_notifications'));	
 if (disabled){
 document.getElementById('notification_placeholder').innerHTML = `<i class="ri-cloud-windy-fill"></i><br>Notifications <br>are disabled`;
@@ -59,20 +65,28 @@ document.getElementById('notification_placeholder').innerHTML = `<i class="ri-cl
 
 };
 
+
+//notification system for the project console
 var project_console_notify = function(message,type){	
 	
+	//the display property value for the "what does this mean?" button that appears under project errors. by default, it isn't seen unless the notification is an error, so we hide it in every other case. 
 	var errorbutton = "none";
 	
 	if (type === "error"){
+		//this is an error notif
 	fillcolor = "#a00000";
 	errorbutton = "block";
 	} else if (type === "warning"){
+		//this is a warning notif, so we change the background-color property, but still hide the error button
 	fillcolor = "#a55000;";	
 	errorbutton = "none";
 	} else {
+		//just a normal console.log, we still hide the error button
 		fillcolor = "#1a1a1a";
 		errorbutton = "none";
 	}
+	
+	//actually write the notification to the project console
 	
 document.getElementById('project_console_notification_list').innerHTML +=`
 
@@ -84,10 +98,10 @@ document.getElementById('project_console_notification_list').innerHTML +=`
 </div>
 `;
 
-
+//update the project notification count
 project_notification_count = project_notification_count+1;
 
-
+//show the notif badge
 document.getElementById('console_notification_count').style.opacity = "100%";
 document.getElementById('console_notification_count').innerHTML = project_notification_count;
 
@@ -95,7 +109,7 @@ document.getElementById('console_notification_count').innerHTML = project_notifi
 };
 
 
-//a global remove function, but i use it to get rid of the mini-notifs on click. Like using a power washer on a saltine cracker.
+//a global remove function, but i use it to get rid of the mini-notifs on click. Like using a power washer on a saltine cracker. ;)
 
 var remove = function(element){
 element.style.transition = "all 0.1s";
@@ -111,7 +125,7 @@ check_notif_count();
 
 };
 
-//the text that fills an iframe element when we're offline.
+//the text that fills a always-online menu when we're offline.
 
 var offline_text = `
 
@@ -136,36 +150,42 @@ var recover_text = `
 
 `;
 
-var project_text = `
 
-<div class = 'project-text' >
-<h1 style = "text-align:center"><i class="ri-rainbow-line"></i>
-<br>Welcome!</h1>
-<button class="uk-modal-close" href = "" style = "    border-radius: 100vmin;
-    position: relative;
-    margin: 0;
-    width: 100%;" >Let's get started.</button>
+//the default offline message for addon menus
+
+var addon_text = `
+
+<div class = 'offline-text' >
+<h1><i style = "font-size:7.5vmin" class='ri-cloud-off-fill'></i>
+<br><span style = "font-size:5vmin">No connection</span></h1>
+<button style = "font-size:2vmin;" onclick = 'window.location.href = "ms-settings://network";' >This Add-on requires an internet connection.</button>
 
 `;
 
+
+//set the notif badge to 0 and then hide it until we send another notification
 var reset_notif_badge = function(){
 document.getElementById('notification_count').innerHTML = "0";
 document.getElementById('notification_count').style.display = "none";
 notification_count = 0;
 };
 
+//reset the project console, hide the notif badge, set the notif count to 0, etc.
 var reset_project_console_badge = function(){
 document.getElementById('console_notification_count').innerHTML = "0";
 document.getElementById('console_notification_count').style.opacity = "0%";
 project_notification_count = 0;
 };
 
+//open a stackoverflow page with the function input passed as a search query
 var web_search = function(query){
 popup_sound.currentTime = 0;
 popup_sound.play();
 window.open('https://www.stackoverflow.com/search?q='+encodeURIComponent(query),"_blank");
 };
 
+
+//literally copies text to the clipboard, and updates the button icons to match the status ("copy", copied, "copy")
 var copy_text = function(text,element){
 navigator.clipboard.writeText(text);
 notify('nuken wrote some text to your clipboard.',0);

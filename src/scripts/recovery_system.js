@@ -35,9 +35,17 @@ var ampm = "AM";
 let [static_month, static_day, static_year] = new Date().toLocaleDateString("en-US").split("/");
 
 
-if (static_hour>12){
+if (static_hour>=12){
+
+if (static_hour === 12){
+static_hour = static_hour = 12;
+ampm = "PM";
+} else {
 static_hour = static_hour - 12;
 ampm = "PM";
+}
+
+
 }
 
 if (static_minute<10){
@@ -84,10 +92,6 @@ localStorage.setItem('recovered_project_data', project);
 
 document.getElementById('recover_time').innerHTML = time;
 
-/*document.getElementById('recover_project_button').style.opacity = "100%";
-document.getElementById('recover_project_button').style.pointerEvents = "auto";
-document.getElementById('recover_project_button').innerHTML = '<i class="ri-download-cloud-line"></i> <span> Recover this project</span>';
-*/
 	}
 	
 } else {

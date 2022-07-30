@@ -82,9 +82,10 @@ var title = project.split('<title>').pop().split('</title>')[0];
 
 var file = imported_filename;
 
-document.getElementById('stylebox').value = style;
-document.getElementById('scriptbox').value = script;
-document.getElementById('markupbox').value = markup;
+stylebox_editor.getSession().setValue(style);
+markupbox_editor.getSession().setValue(markup);
+scriptbox_editor.getSession().setValue(script);
+
 document.getElementById('metabox').value = meta;
 document.getElementById('titlebox').value = title;
 

@@ -296,6 +296,8 @@ help_sound.volume = global_volume;
 exit_help_sound.volume = global_volume;
 trash_sound.volume = global_volume;
 snap_sound.volume = global_volume;
+intro_sound.volume = global_volume;
+download_sound.volume = global_volume;
 
 document.getElementById('volume_setting').value = global_volume*100;
 };

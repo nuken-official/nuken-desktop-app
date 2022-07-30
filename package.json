@@ -1,7 +1,7 @@
 {
   "name": "nuken",
   "productName": "nuken",
-  "version": "8.0.0",
+  "version": "8.0.2",
   "description": "nuken is a development environment for web-based applications.",
   "main": "src/index.js",
   "scripts": {
@@ -9,38 +9,52 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint src --color"
+    "lint": "eslint src --color",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "keywords": [],
+
   "author": "nuken Dev Team",
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "nuken"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm"
+      },
+      "electronWinstallerConfig": {
+        "name": "nuken"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "nuken"
+      }
     }
   },
+  "build":{
+"win": {   
+"appId":"com.nuken.app",
+"icon":"src/icons/favi.ico",
+"asar":false
+}
+},
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "abbrev": "^1.1.1",
@@ -116,6 +130,7 @@
     "dashdash": "^1.14.1",
     "debug": "^2.6.9",
     "decompress-response": "^3.3.0",
+    "decompress-zip": "^0.3.3",
     "deep-equal": "^2.0.5",
     "deepmerge": "^4.2.2",
     "defaults": "^1.0.3",
@@ -136,7 +151,6 @@
     "electron-is-dev": "^0.3.0",
     "electron-notarize": "^1.2.1",
     "electron-prompt": "^1.7.0",
-    "electron-rebuild": "^3.2.7",
     "electron-squirrel-startup": "^1.0.0",
     "emoji-regex": "^8.0.0",
     "encodeurl": "^1.0.2",
@@ -504,22 +518,25 @@
     "yocto-queue": "^0.1.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.64",
-    "@electron-forge/maker-appx": "^6.0.0-beta.64",
-    "@electron-forge/maker-deb": "^6.0.0-beta.64",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.64",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.64",
-    "@electron-forge/maker-zip": "^6.0.0-beta.64",
-    "@electron-forge/publisher-github": "^6.0.0-beta.64",
+    "@electron-forge/cli": "^6.0.0-beta.65",
+    "@electron-forge/maker-appx": "^6.0.0-beta.65",
+    "@electron-forge/maker-deb": "^6.0.0-beta.65",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.65",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.65",
+    "@electron-forge/maker-zip": "^6.0.0-beta.65",
+    "@electron-forge/plugin-compile": "^6.0.0-beta.65",
+    "@electron-forge/publisher-github": "^6.0.0-beta.65",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "coffee-script": "^1.4.0",
-    "electron": "^18.2.3",
-    "eslint": "^3",
-    "eslint-config-airbnb": "^15",
-    "eslint-plugin-import": "^2",
-    "eslint-plugin-jsx-a11y": "^5",
-    "eslint-plugin-react": "^7"
+    "electron-builder": "^23.1.0",
+    "electron-prebuilt-compile": "8.2.0",
+    "electron-rebuild": "^3.2.8",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.30.1"
   }
 }

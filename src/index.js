@@ -1,9 +1,22 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require("fs");
+const DecompressZip = require('decompress-zip');
 const addon_index = [];
 const theme_index = [];
 const template_index = [];
+
+/* PRODUCTION DIRECTORIES
+const addon_directory = "../../../addons/";
+const theme_directory = "../../../themes/";
+const template_directory = "../../../templates/";
+*/
+
+
+const addon_directory = "addons/";
+const theme_directory = "themes/";
+const template_directory = "templates/";
+
 
 require('@electron/remote/main').initialize()
 let win;
@@ -13,6 +26,7 @@ if (require('electron-squirrel-startup')) {
   // eslint-disable-line global-require
   app.quit();
 }
+
 
 const ipc = {
     'render': {
@@ -27,6 +41,7 @@ const ipc = {
     }
 };
 
+
 //require('child_process').spawn('control', ['ncpa.cpl']);
 
 const createWindow = () => {
@@ -40,27 +55,37 @@ const createWindow = () => {
 	  titleBarStyle: 'hidden',
 	  titleBarOverlay: {
               color: '#000000',
-              symbolColor: '#ffffff'
+              symbolColor: '#ffffff',
+			  backgroundColor:'#000000',
           },
 		  webPreferences: {
-			nodeIntegration: true, // is default value after Electron v5
+	  nodeIntegration: true, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: true, // turn off remote
-      preload: path.join(__dirname, "preload.js") // use a preload script
-
+      preload: path.join(__dirname, "preload.js"),	// use a preload script
         },
 	  icon: path.join(__dirname, 'icons/favi.ico'),
 	  
   });
   
+// remove so we can register each time as we run the app. 
+app.removeAsDefaultProtocolClient('nuken');
 
-const dir = 'src/addons/';
+
+
+app.setAsDefaultProtocolClient('nuken', process.execPath);        
+
+  
+
+
+const dir = path.join(__dirname, addon_directory);
 const files = fs.readdirSync(dir);
 
-const pdir = 'src/templates/';
+
+const pdir = path.join(__dirname, template_directory);
 const pfiles = fs.readdirSync(pdir);
 
-const tdir = 'src/themes/';
+const tdir = path.join(__dirname, theme_directory);
 const tfiles = fs.readdirSync(tdir);
 
 for (const file of files) {
@@ -133,6 +158,52 @@ ipcMain.handle('themes', async (event, someArgument) => {
   return theme_index;
 })
 
+ipcMain.on('extract_file', async (event, args) => {
+extract_zip_file(args);
+});
+
+
+
+function extract_zip_file(extract_object) {
+console.log(extract_object[0].toString());
+console.log(extract_object[1].toString());  
+
+var ZIP_FILE_PATH = path.join(__dirname, extract_object[0].toString());
+var DESTINATION_PATH = path.join(__dirname, extract_object[1].toString());
+var unzipper = new DecompressZip(ZIP_FILE_PATH);
+
+// Add the error event listener
+unzipper.on('error', function (err) {
+    console.log('Caught an error', err);
+});
+
+// Notify when everything is extracted
+unzipper.on('extract', function (log) {
+    console.log('Finished extracting', log);
+	mainWindow.webContents.executeJavaScript('notify("Content was installed successfully. Please restart nuken (now or later) to use it.")');
+	mainWindow.webContents.executeJavaScript('download_sound.currentTime=0;download_sound.play();');
+	
+	
+});
+
+// Notify "progress" of the decompressed files
+unzipper.on('progress', function (fileIndex, fileCount) {
+    console.log('Extracted file ' + (fileIndex + 1) + ' of ' + fileCount);
+});
+
+// Start extraction of the content
+unzipper.extract({
+    path: DESTINATION_PATH
+    // You can filter the files that you want to unpack using the filter option
+    //filter: function (file) {
+        //console.log(file);
+        //return file.type !== "SymbolicLink";
+    //}
+});
+  
+}
+
+
   ipcMain.handle('dialog:openFile', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
 		
@@ -147,9 +218,50 @@ ipcMain.handle('themes', async (event, someArgument) => {
       return filePaths[0]
     }
   })
+  
 
+
+mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
+  // Set the save path, making Electron not to prompt a save dialog.
+  
+  console.log(path.join(__dirname,addon_directory));
+  
+  var content_type = item.getFilename().toString();
+  var content_directory = addon_directory;  
+  console.log(content_type);
+  if (content_type.includes('addon')){
+item.setSavePath(path.join(__dirname,addon_directory+content_type));  
+  } else if (content_type.includes('theme')){
+item.setSavePath(path.join(__dirname,theme_directory+content_type));
+  } else if (content_type.includes('template') || content_type.includes('_pack')){
+item.setSavePath(path.join(__dirname,template_directory+content_type));
+  } else {
+console.log('Error');	  
+ }	  
+
+  item.on('updated', (event, state) => {
+    if (state === 'interrupted') {
+      console.log('Download is interrupted but can be resumed')
+    } else if (state === 'progressing') {
+      if (item.isPaused()) {
+        console.log('Download is paused')
+      } else {
+        console.log(`Received bytes: ${item.getReceivedBytes()}`)
+      }
+    }
+  })
+  item.once('done', (event, state) => {
+    if (state === 'completed') {
+      console.log('Download successfully');
+	  mainWindow.webContents.executeJavaScript('init_extract_process()');
+    } else {
+      console.log(`Download failed: ${state}`)
+    }
+  })
+})
 
   // and load the index.html of the app.
+mainWindow.setBackgroundColor('#000000');
 mainWindow.loadFile(path.join(__dirname, 'index.html'));
 mainWindow.maximize();
 };
@@ -170,23 +282,15 @@ app.on('window-all-closed', () => {
 });
 
 
-//Comment out the code below if you want to enable DevTools in nuken.
-
-/*
+// 👇 Comment out the code below if you want to enable DevTools in nuken. 👇
 
 app.on("browser-window-created", (e, win) => {
    win.removeMenu();
 });
 
-*/
 
 
-
-
-
-
-
-
+// 👆 Comment out the code above if you want to enable DevTools in nuken. 👆
 
 
 app.on('activate', () => {
@@ -196,6 +300,8 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+
 
 
 

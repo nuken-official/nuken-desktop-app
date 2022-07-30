@@ -1,5 +1,6 @@
-
+//a function for downloading files, pretty much we create a link element, click it, which triggers a file download.
 function download(filename, text) {
+	//MAKE SURE we remove any SENSITIVE project config data from the project before exporting
 	text = text.replace(file_path_insert,'');
 	console.log('Downloader initiated.');
   var element = document.createElement('a');
@@ -10,17 +11,11 @@ function download(filename, text) {
   document.body.appendChild(element);
 
   element.click();
-
+//and now that we're done, we get rid of the link.
   document.body.removeChild(element);
 }
 
-var download_project = function(){
-console.log('Project downloaded successfully.');
-var project_title = document.getElementById('filebox').value;
-
-download(project_title, completed_project);
-};
-
+//this is the function that's called when the "Export project" button is clicked. it essentially tells nuken to download the user's project based on a selected filename and some text (this is written to the file we're downloading).
 
 var export_project = function(){
 
@@ -39,13 +34,18 @@ var filename = document.getElementById('filebox').value;
   document.body.removeChild(element);
 };
 
+
+//if the project config menu is set up to look for an absolute file path on the user's system, this bit of code is appended to the project to add it to every relative file path. 
+
 var file_path_insert = "";
 
 var init_custom_file_paths = function(){
 
-	var keep_html = document.getElementById('markupbox').value;
-	var keep_css = document.getElementById('stylebox').value;
-	var keep_js = document.getElementById('scriptbox').value;
+var keep_css = stylebox_editor.getSession().getValue();
+var keep_html = markupbox_editor.getSession().getValue();
+var keep_js = scriptbox_editor.getSession().getValue();
+	
+	//first, we save the values of the html, css, and js code boxes;; plus we get what's written to the custom file path input box.
 
 	var loc = document.getElementById('custom_file_path_input').value.toString();
 	
@@ -54,6 +54,8 @@ var init_custom_file_paths = function(){
 	file_path_insert = "";	
 		
 	} else {
+		
+	//this bit of code looks for every element with a link, src, href, etc. tag and appends the LOC variable to the beginning of the relative file path.	
 
 	file_path_insert = `
 <!--nuken_file_path_insert_begin-->	
@@ -77,10 +79,12 @@ var all_videos=document.getElementsByTagName('video');for(var u=0;u<all_videos.l
 	`;
 	
 	}
+	
+	//reset the text boxes with our saved data (see the beginning of this function), for safekeeping.
 
-document.getElementById('markupbox').value = keep_html;
-document.getElementById('stylebox').value = keep_css;
-document.getElementById('scriptbox').value = keep_js;
+stylebox_editor.getSession().setValue(keep_css);
+markupbox_editor.getSession().setValue(keep_html);
+scriptbox_editor.getSession().setValue(keep_js);
 
 
 }

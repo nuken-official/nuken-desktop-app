@@ -1,4 +1,4 @@
-//Because you're looking at this trying to figure what the f**k this is and what it does, here's a walkthrough on how to define resources for nuken.
+//Because you're looking at this trying to figure what the hell this is and what it does, here's a walkthrough on how to define resources for nuken.
 
 //Start with an object
 var javascript_lang = {
@@ -6,8 +6,8 @@ var javascript_lang = {
     title: "JavaScript",
     //The object name, but because our onclick events don't like it for some reason, we need it in string form. This also has other uses, but we won't get into that here.
     codename: "javascript_lang",
-    //The resource icon, written to the .menu_scroll
-    icon: "icons/script/javascript.png",
+    //The resource icon, written to the correct management menu (we begin looking at index.html's root directory, but a custom url can be used here)
+    icon: "icons/javascript.png",
     //Where we're pulling this resource from
     location: 'On this device',
     //Can this be used offline? If so, this is false.
@@ -20,10 +20,13 @@ var javascript_lang = {
     description: `
 JavaScript is a programming language that adds interactivity to your project. It's versatile and beginner-friendly - and with more experience, you'll be able to create games, animated 2D and 3D graphics, comprehensive database-driven apps, and much more!
 `,
-
+//the actual resource - that is, what's supposed to be written to the document. so like, a <script> CDN link, or something idk
     resource: ``,
+//nuken's resources are written to the project BELOW the <body> tags. if the resource needs to be loaded in before anything else, put it here instead of in resource.resource.	
     extra: '',
+// the donation link that's opened when the user clicks the "donate" button.	
     donate: '',
+// the resource's source code, which is opened when the user clicks "view".	
     view: ''
 };
 
@@ -41,19 +44,21 @@ var push_resource = function(resource, menu) {
 
     /*
 
-    1) We create an object with the correct attributes nuken is looking for.
-    2) We push an icon to the menu, and give it an event listener to fill in the rest of the information when clicked on.
-    3) If the icon is actually clicked, it is "selected" and the title, info bar, description, etc. is filled in.
+    1) We create an "resource" object, with the listed properties above.
+    2) We push an icon to the menu, and give it an onclick event to fill in the rest of the information when clicked on, based on the "resource" object name.
+    3) If the icon is actually clicked, it is "selected" and the title, info bar, description, etc. is filled in based on the properties we've passed to our "resource" object.
 
     */
 
 
 };
 
+
+//and here's everything listed above, put into practice.
 var css3_sheet = {
     title: "CSS 3",
     codename: "css3_sheet",
-    icon: "icons/style/css3.png",
+    icon: "icons/css3.png",
     location: 'On this device',
     online: false,
     secure: true,
@@ -68,14 +73,15 @@ Cascading Style Sheets (CSS) is a stylesheet language used to describe the prese
 };
 
 
-//This is the aforementioned select function, specifically for the Script Management Menu. Yes, technically this is the same as the other select function, but for f**k's sake, I want to keep them seperate just because. Much easier to automate.
+//This is the aforementioned select function, specifically for the Script Management Menu. Yes, technically this is the same as the other select function, I want to keep them seperate just because. Much easier to automate.
 
-var select_script = function(resource) {
-
-    //You see why we set this up as an object? All we have to do is call the resource object here and we're good to go.  	
+var select_script = function(resource) { 	
 
 enable_sound.currentTime = 0;
 enable_sound.play();
+
+
+//when we click on a resource icon, first we remove the "selected_resource" class from ALL of the icons.
 
     var cusid_ele = document.getElementsByClassName('script_menu_item');
     for (var i = 0; i < cusid_ele.length; ++i) {
@@ -86,17 +92,23 @@ enable_sound.play();
     document.getElementById('script_menu').style.display = "block";
     document.getElementById('custom_script_input').style.display = "none";
 
+//then, we add the "selected_resource" class to the icon we've just clicked on. the "selected_resource" class gives the icon an orange border, full opacity, slightly larger size, etc.
+
     setTimeout(function() {
         document.getElementById(resource.codename.toString() + "_icon").classList.add('selected_resource');
     }, 1);
 
 
-    // 'JavaScript'
+//then, we fill in the rest of the menu, using our selected "resource" object's properties.
+
+    //TITLE
     document.getElementById('script_title').innerHTML = resource.title.toString();
 
-    // 'On this device'
+    // LOCATION 
     document.getElementById('script_location').innerHTML = resource.location.toString();
 		
+		
+	//when the script_location text is clicked,  we take that text, slap "http" in front of it, and open it in a new window.	
 	document.getElementById('script_location').onclick = function(){
 	window.open("http://"+resource.location.toString(),"_blank");
 		popup_sound.currentTime = 0;
@@ -131,11 +143,11 @@ enable_sound.play();
 
     }
 
-    // 'JavaScript is achsually very cool because blah blah blah blah blah blah blah blah'
+    // DESCRIPTION 
 
     document.getElementById('script_description').innerHTML = resource.description.toString();
 
-    // Send the user to 'www.whyinthefudgesciclesdoesthisexist.com' for more information
+    // DOCUMENTATION - set the onclick event for the documentation button
 
     document.getElementById('script_documentation').onclick = function() {
         window.open(resource.documentation.toString(), "_blank");
@@ -143,6 +155,8 @@ enable_sound.play();
 	popup_sound.play();
 
     };
+	
+	//do some checking for a donation link - if it doesn't exist, don't show the button.
 
     if (resource.donate === '') {
         document.getElementById('script_donate').style.display = "none";
@@ -158,7 +172,7 @@ enable_sound.play();
         };
     }
 
-
+// same thing for the source "view" button.
 
     if (resource.view === '') {
         document.getElementById('script_direct_view').style.display = "none";
@@ -175,11 +189,15 @@ enable_sound.play();
 
     }
 	
+
+	// you know those icons in the Export Menu that show what resources you currently have selected? this updates the script icon there.
 	document.getElementById('script_preview').src = resource.icon;
-	document.getElementById('script_preview').title = "This project uses "+resource.title+"."
+	document.getElementById('script_preview').title = "This project uses "+resource.title+".";
 
 
+//set the value for extra_script, this will eventually be written to the project in the preview area
     extra_script += resource.extra.toString();
+	
     selected_script = resource.resource.toString();
 	selected_script_icon = resource.codename.toString();
 
@@ -298,8 +316,8 @@ enable_sound.play();
 
 };
 
-//Since obviously JS and CSS can be used offline, they're pushed to the menu regardless of whether the user is offline or online.
 
+//this pushes the custom script icon to the Script Management Menu.
 var push_custom_script = function() {
     document.getElementById('script_selection').innerHTML += `
 <img id = "custom_script_icon" onerror = "this.src = 'icons/add.png'" src = "icons/add.png" class = "script_menu_item" onclick = "select_custom_script()" ></img>
@@ -308,16 +326,22 @@ var push_custom_script = function() {
 
 };
 
+
+//this pushes the custom stylesheet icon to the Stylesheet Management Menu
 var push_custom_style = function() {
     document.getElementById('style_selection').innerHTML += `
 <img id = "custom_style_icon" src = "icons/add.png" class = "style_menu_item" onclick = "select_custom_style()" ></img>
 `;
 };
 
+
+//when the custom script icon is clicked
 var select_custom_script = function() {
 
 enable_sound.currentTime = 0;
 enable_sound.play();
+
+//do the typical selection stuff, but this time specify the custom script icon as being selected
 
     var cusid_ele = document.getElementsByClassName('script_menu_item');
     for (var i = 0; i < cusid_ele.length; ++i) {
@@ -337,8 +361,12 @@ enable_sound.play();
 
 };
 
+
+// a regex for detecting links
 var link_detection_regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
+
+//okay imma level with you a lot of the following code is weird but idk, i think i was half asleep while writing it so i'm not going to question why it works. you shouldn't either until we have to replace it. 
 
 var detect_url = function(input) {
 
@@ -351,7 +379,7 @@ const get_domain = (input) => {
     return new URL(input).hostname;
 }
 
-
+//same thing but for the custom stylesheet icon
 var select_custom_style = function() {
 
 enable_sound.currentTime = 0;
@@ -375,21 +403,29 @@ enable_sound.play();
 
 };
 
+//fills in the contents of the custom stylesheet area based on the user's input.
+
 var fill_in_style_info = function() {
+	
+	//set our selected_style value (which gets appended to the document) to whatever the user's inputted
 	
 	selected_style = document.getElementById('custom_style_textarea').value;
 
+//get the user's input
+
     var string = document.getElementById('custom_style_textarea').value;
+
+//run it through the link detection regex to get the resource url
 
     var full_url = detect_url(string);
 
 
-
+//see if the resource is https or not
     var protocol = full_url.toString().toLowerCase().includes('https');
-
+//see if it's a local file or not. local files don't exactly work 100% problem free yet, but still, we might as well check.
     var file = full_url.toString().toLowerCase().includes('file://');
 
-
+//depending on the status of protocol and file, we display different icons in the little status bar thingy.
     if (file) {
 
         document.getElementById('custom_style_status').innerHTML = `<i class="ri-cloud-off-fill"></i>`;
@@ -426,9 +462,10 @@ var fill_in_style_info = function() {
 
 
 
-
+//this is displayed as the custom resource's location. essentially here we're just stripping the URL down to its domain.
     document.getElementById('custom_style_location').innerHTML = get_domain(full_url);
 	
+	//really quickly do a check and remove any remaining parts of the URLs
 	var temp_name= "https://"+get_domain(full_url).toString();
 
 
@@ -442,6 +479,8 @@ var fill_in_style_info = function() {
         })
 
 
+//notify the user that the process succeeded
+
     notify("A custom stylesheet was selected in the <a uk-toggle = 'target: #style_page' ><i class='ri-attachment-fill'></i> <span>Stylesheet Management Menu.</span></a>");
 	
 			enable_sound.currentTime = 0;
@@ -449,6 +488,10 @@ enable_sound.play();
 
 
 };
+
+//fills in the contents of the custom script area based on the user's input.
+
+//pretty much the same function as above, but for the script management menu.
 
 var fill_in_script_info = function() {
 	
@@ -525,5 +568,6 @@ enable_sound.play();
 };
 
 
+//push the JS and CSS resource icons to their respective management menus, regardless of whether the user is online or not (since these resources can obviously be used either way)
 push_resource(javascript_lang, 'script');
 push_resource(css3_sheet, 'style');

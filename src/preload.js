@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 			addons: () => ipcRenderer.invoke('addons'),
 			themes: () => ipcRenderer.invoke('themes'),
 			templates: () => ipcRenderer.invoke('templates'),
+			extract_file: (extract_object) => ipcRenderer.send('extract_file', extract_object),
 			
     }
 

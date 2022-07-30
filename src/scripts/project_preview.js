@@ -21,9 +21,10 @@ success_1.play();
 document.getElementById('project_console_notification_list').innerHTML = "";
 //reset_project_console_badge();
 
-var style = document.getElementById('stylebox').value;
-var markup = document.getElementById('markupbox').value;
-var script = document.getElementById('scriptbox').value;
+var style = stylebox_editor.getSession().getValue();
+var markup = markupbox_editor.getSession().getValue();
+var script = scriptbox_editor.getSession().getValue();
+
 var title = document.getElementById('titlebox').value;
 var meta = document.getElementById('metabox').value.toString();
 var author = document.getElementById('project_author_box').value;
@@ -141,6 +142,8 @@ document.getElementById('project_snapshot_button').style.opacity = "100%";
 
 init_custom_file_paths();
 
+setTimeout(function(){
+
 const iWindow = iframe.contentWindow;
 const iDocument = iWindow.document;
 
@@ -153,6 +156,8 @@ html2canvas(element).then(canvas => {
 	document.body.appendChild(canvas);
 });
 
+setTimeout(function(){
+
 var canvas = document.getElementById('project_canvas');
 
 canvas_url = document.getElementById('project_canvas').toDataURL();
@@ -163,6 +168,9 @@ var rgb = "rgb(" + p[0]+", "+p[1]+", "+p[2]+")";
 
 document.getElementById('right_frame').style.backgroundImage = "linear-gradient(to left, "+rgb+", "+rgb+")";
 //document.getElementById('console_button').style.color = rgb;
+},100);
+
+},100);
 
 };
 
@@ -181,8 +189,11 @@ var temp = e.toString().replace(/'/g, "");
 
 
 notify(`nuken encountered <a onclick = "prompt_for_web('`+temp+`')" >a runtime error.</a>`,0);
+
+if (ready_to_notify){
 notif_error_sound.currentTime = 0;
 notif_error_sound.play();
+}
 }
 	
 };

@@ -4,17 +4,13 @@
 <link rel="shortcut icon" href = "icons/favi.ico">
 <link rel="stylesheet" href="styles/uikit.css" />
 <link href="icons/remix/remixicon.css" rel="stylesheet">
-<link href="styles/tuesday.css" rel="stylesheet">
 <link href="styles/code_input.css" rel="stylesheet">
-<link href="styles/prism.css" rel="stylesheet">
 <link href="styles/default_stylesheet.css" rel="stylesheet">
 <script src="scripts/jquery.js"></script>
 <script src="scripts/jquery-ui.min.js"></script>
-<script src="scripts/prism.js"></script>
 <script src="scripts/uikit.js"></script>
 <script src="scripts/html2canvas.js"></script>
 <script src="scripts/uikit_icons.js"></script>
-<script src="scripts/code_input.js"></script>
 <script src="scripts/share.js"></script>
 </head>
 
@@ -30,7 +26,7 @@
 
 <!--This is the draggable part of the navbar. I
 t's left empty to look nice with the UI window control buttons, and to display small text/images if needed. -->
-<div class = "top" class = "drag">
+<div class = "top drag">
 </div>
 
 <!--The "true" navbar.-->
@@ -160,14 +156,11 @@ t's left empty to look nice with the UI window control buttons, and to display s
     </div>
 
 <div id = "left_frame">
-<div class = "codebox" >
-<code-input id = "stylebox"  lang="css" placeholder = "Drop some inline styling here."></code-input>
+<div class = "codebox ace-dawn" id = "stylebox">
 </div>
-<div class = "codebox" >
-<code-input id = "markupbox" lang="html" placeholder = "This is the markup box." ></code-input>
+<div class = "codebox ace-dawn" id = "markupbox">
 </div>
-<div class = "codebox" >
-<code-input id = "scriptbox" lang="javascript" placeholder = "Enter some code here." ></code-input>
+<div class = "codebox ace-dawn" id = "scriptbox">
 </div>
 </div>
 
@@ -301,7 +294,7 @@ t's left empty to look nice with the UI window control buttons, and to display s
 	<p style = "     font-family: 'bold';
     color: #c0c0c0;
     display: inline-block;
-    margin: 1vmin;" >nuken | v8.0.0 | b7.9.2022</p>
+    margin: 1vmin;" >v8.0.2 | b8.1.22</p>
 	<p onclick = "start_credits()" style = "    font-family: 'bold';
     color: #c0c0c0;
     float: right;
@@ -315,10 +308,10 @@ t's left empty to look nice with the UI window control buttons, and to display s
 
 <!--nuken Shop-->
 <div id="shop_page" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body">
+    <div class="uk-modal-dialog uk-modal-body" id = "shop_page_body">
         <h2 id = "shop_page_title" class="uk-modal-title"><i class="ri-shopping-bag-fill"></i> <span>nuken Shop</span></h2>
        <!--Exit--> <button class="uk-modal-close" type="button"><i class="ri-check-fill"></i> <span>I'm done looking</span></button>
-		<!--nuken Shop iframe--><iframe class = "menu_frame" id = "shop_frame" src = "https://nuken.xyz/shop/shop.html" ></iframe>
+	  <!--nuken Shop frame is written here eventually-->
     </div>
 </div>
 
@@ -567,7 +560,7 @@ t's left empty to look nice with the UI window control buttons, and to display s
 		<option><i class="ri-folder-5-fill"></i> A folder on my device</option>
 		<option><i class="ri-global-fill"></i> Somewhere on the web</option>
 		</select>
-		<input oninput = "init_custom_file_paths()" id = "custom_file_path_input" style = "border-radius:0vmin 0vmin 1vmin 1vmin" placeholder = "file:///C:/  . . .  Enter the absolute file path here."></input>
+		<input oninput = "init_custom_file_paths()" id = "custom_file_path_input" style = "border-radius:0vmin 0vmin 1vmin 1vmin" placeholder = "file:///C:/  [Enter the absolute file path here.]"></input>
 		
 		<button onclick = "window.open(document.getElementById('custom_file_path_input').value.toString(),'_blank');popup_sound.currentTime = 0;popup_sound.play()" style = "    margin-top: 2.5vmin;
     border-radius: 0.75vmin;"><i class="ri-link"></i> <span>Test this location</span></button>
@@ -787,6 +780,32 @@ t's left empty to look nice with the UI window control buttons, and to display s
 </div>
 
 </div>
+
+
+<div id="shop_confirm_page" uk-modal = "stack:true">
+    <div class="uk-modal-dialog uk-modal-body" style = "animation: pulse-black 1s infinite" >
+        <h2 class="uk-modal-title"><i class="ri-download-fill"></i> <span>Ready to download?</span></h2>
+	   <span id = "shop_download_location" >https://nuken.xyz/shop/addons/packages/color_picker_addon.zip</span>
+	   <p>Just checking in. Here's the file you're going to download.</p>
+	   <button id = "shop_download_button" onclick = "init_shop_download(downloadable)"  ><i class="ri-check-fill"></i> <span>Let's begin</span></button>
+	   <button onclick = "UIkit.modal('#shop_confirm_page').hide();exit_help_sound.currentTime=0;exit_help_sound.play()" ><i class="ri-close-fill"></i> <span>Never mind</span></button>
+	   
+	   
+</div>
+
+</div>
+
+<div id="shop_success_page" uk-modal = "stack:true">
+    <div class="uk-modal-dialog uk-modal-body" style = "animation: pulse-black 1s infinite" >
+        <h2 class="uk-modal-title"><i class="ri-download-fill"></i> <span>Success!</span></h2>
+		<p>Your content was downloaded and installed. It'll be ready to use the next time you start nuken.</p>
+		<button onclick = "UIkit.modal('#shop_success_page').hide();exit_help_sound.currentTime=0;exit_help_sound.play()" ><span>Alright, thanks</span></button>
+	   
+</div>
+
+</div>
+
+
 <div id = "addon_sandbox">
 
 
@@ -839,9 +858,9 @@ t's left empty to look nice with the UI window control buttons, and to display s
 <button onclick = "end_nuken()" style="    background-color: white;
     color: black;
     font-family: 'bold';
-    padding: 2vmin;
+    padding: 2.5vmin;
     border: none;
-    border-radius: 1.5vmin;
+    border-radius: 2vmin;
     font-size: 2vmin;">No problem, have a nice day</button>
 </div>
 
@@ -857,7 +876,44 @@ t's left empty to look nice with the UI window control buttons, and to display s
 <script src = "scripts/theme_system.js"></script>
 <script src = "scripts/recovery_system.js"></script>
 <script src = "scripts/init_system.js"></script>
+<script src="scripts/ace.js"></script>
+<script src="scripts/ace-dawn.js"></script>
+<script src="scripts/ace-js.js"></script>
+<script src="scripts/ace-html.js"></script>
+<script src="scripts/ace-css.js"></script>
 <script>
+
+var init_dlc = function(){
+init_addons();
+init_templates();
+init_theme();
+};
+
+
+var theme_direc = "themes/";
+var template_direc = "templates/";
+var addon_direc = "addons/";
+
+
+/*
+var theme_direc = "../../../themes/";
+var template_direc = "../../../templates/";
+var addon_direc = "../../../addons/";
+*/
+
+
+var stylebox_editor = ace.edit("stylebox");
+var markupbox_editor= ace.edit("markupbox");
+var scriptbox_editor = ace.edit("scriptbox");
+
+stylebox_editor.setTheme("ace/theme/dawn");
+stylebox_editor.session.setMode("ace/mode/css");
+
+markupbox_editor.setTheme("ace/theme/dawn");
+markupbox_editor.session.setMode("ace/mode/html");
+
+scriptbox_editor.setTheme("ace/theme/dawn");
+scriptbox_editor.session.setMode("ace/mode/javascript");
 
 var workspace_is_inverted = false;
 var workspace_is_grayscaled = false;
@@ -900,6 +956,8 @@ var help_sound = new Audio('audio/help.mp3');
 var exit_help_sound = new Audio('audio/exit.mp3');
 var trash_sound = new Audio('audio/trash.mp3');
 var snap_sound = new Audio('audio/snap.mp3');
+var intro_sound = new Audio('audio/intro.mp3');
+var download_sound = new Audio('audio/download.mp3');
 
 var credits_music = new Audio('audio/credits.mp3');
 credits_music.volume = 1;
@@ -921,21 +979,23 @@ nuken_location = nuken_location.replace('index.html', "");
 }
 
 
-
 window.onload = function(){
 
 push_custom_template();
+
+window.addEventListener("message", onMessage, false);        
+
+var iframe = document.createElement('iframe');
+document.getElementById('shop_page_body').appendChild(iframe);
+iframe.id = "shop_frame";
+iframe.classList.add('menu_frame');
+iframe.src = "https://nuken.xyz/shop/shop.html";
+iframe.contentWindow.document.open();
 
 //blah
 init_localstorage();
 
 init_online();
-
-//Remove item
-//localStorage.removeItem("lastname");
-//Remove all items
-//localStorage.clear();
-
 
 UIkit.modal('#recover_page').show();
 UIkit.modal('#share_page').show();
@@ -956,8 +1016,8 @@ project_write();
 });
 
 if (!navigator.onLine){
-shop_frame.src = "";
-shop_frame.outerHTML = offline_text;
+document.getElementById('shop_frame').src = "";
+document.getElementById('shop_frame').outerHTML = offline_text;
 }
 
 project_frame.src = "";
@@ -993,6 +1053,10 @@ document.getElementById('disable_recovery_check').checked = true;
 }
 
 
+setTimeout(function(){
+intro_sound.play();
+document.body.style.pointerEvents = "auto";
+},1000);
 
 };
 
@@ -1179,7 +1243,85 @@ function credits_fade() {
     }
   };
 
+function onMessage(event) {
+    // Check sender origin to be trusted
+    if (event.origin !== "https://nuken.xyz") return;
 
+    var data = event.data;      
+    if (typeof(window[data.func]) == "function") {
+        window[data.func].call(null, data.files);
+    }
+}
+
+var filename_mem = "";
+var downloadable = "";
+
+// Function to be called from iframe
+function download_shop_files(files) {
+help_sound.currentTime=0;
+help_sound.play();
+UIkit.modal('#shop_confirm_page').show();
+downloadable = "https://nuken.xyz/shop/"+files;
+
+document.getElementById('shop_download_location').innerHTML = downloadable;
+
+};
+
+var init_shop_download = function(files){
+ 
+notify('<span>Downloading</span> <a onclick = "alert(`Downloading content from:\n'+downloadable+'`)"><i class="ri-shopping-bag-fill"></i> <span>nuken Shop content</span>...</a>');
+console.log(downloadable);
+var filenamey = downloadable.replace(/^.*[\\\/]/, '');
+filename_mem = filenamey;
+
+fetch(downloadable).then(function(t) {
+    return t.blob().then((b)=>{
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(b);
+        a.setAttribute("download", filenamey);
+        a.click();
+    }
+    );
+});
+
+UIkit.modal('#shop_confirm_page').hide();
+UIkit.modal('#shop_success_page').show();
+
+};
+
+
+
+var extract_function = function(file, destination){
+var stupid_extract_object = [file, destination];
+window.api.extract_file(stupid_extract_object);
+//this is stupid, apparently ipc renderer doesn't like more than one parameter passed at a time?! like, wtf not cool man.
+};
+
+var init_extract_process = function(){
+var name = filename_mem;
+var content_directory = "";
+
+if (name.includes('addon')){
+content_directory = addon_direc;	
+name = content_directory+name;  
+
+  } else if (name.includes('theme')){
+content_directory = theme_direc;	
+name = content_directory+name;
+
+  } else if (name.includes('template') || name.includes('_pack')){
+content_directory = template_direc;	
+name = content_directory+name;
+
+  } else {
+console.log('Error');	  
+ }	  
+ 
+ console.log(name);
+ console.log(content_directory);
+
+extract_function(name,content_directory);
+};
 
 </script>
 
