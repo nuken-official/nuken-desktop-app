@@ -1,4 +1,4 @@
-# nuken 
+# nuken [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 ###### Create, Edit, Share
 
 nuken is a development environment for web-based applications. You can get started online, or download the desktop app for an offline experience.
