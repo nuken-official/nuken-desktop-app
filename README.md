@@ -10,6 +10,7 @@ nuken is a development environment for web-based applications. You can get start
 ##### Just clone this repo , and...
 []()
 ```sh
+git clone https://github.com/nuken-official/nuken-desktop-app nuken
 npm install
 npm start
 ```
