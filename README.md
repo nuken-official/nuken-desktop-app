@@ -1,7 +1,7 @@
 # nuken 
 ###### Create, Edit, Share
 
-nuken is a development environment for web-based applications. You can get started online, or download the desktop app for an offline experience.
+nuken is a development environment for web-based applications. You can get started online, or download the desktop app.
 
 **Visit [``nuken.xyz``](http://nuken.xyz/) to get started with nuken. This repo is for tinkerers or other devs who want to see what happens under the hood.**
 
